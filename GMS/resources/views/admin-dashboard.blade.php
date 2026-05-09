@@ -26,13 +26,19 @@
 
             <div class="sidebar-bottom">
                 <div class="admin-chip">
-                    <div class="admin-avatar">JD</div>
+                    <div class="admin-avatar">A</div>
                     <div>
-                        <div class="name">John Dean</div>
-                        <div class="role">Super Admin</div>
+                        <div class="name">Welcome, {{ Auth::user()->name }}</div>
+                        <div class="role">Role: {{ Auth::user()->role }}</div>
                     </div>
                 </div>
             </div>
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-logout">
+                    Logout
+        </div>
+        </form>
         </div>
 
         <!-- ── Main ──────────────────────────────────────────────────── -->
@@ -884,8 +890,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
         <script>
             /* ══════════════════════════════════════════════════════════════
-                                           PAGE NAVIGATION
-                                        ══════════════════════════════════════════════════════════════ */
+                                                                           PAGE NAVIGATION
+                                                                        ══════════════════════════════════════════════════════════════ */
             function showPage(page) {
                 document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
