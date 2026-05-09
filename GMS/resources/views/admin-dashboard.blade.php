@@ -35,8 +35,8 @@
             </div>
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="btn-logout">
-                    Logout
+                <button type="submit" class="btn-logout" class="nav-item"><i class="fa fa-logout"></i>Logout</button>
+
         </div>
         </form>
         </div>
@@ -890,8 +890,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
         <script>
             /* ══════════════════════════════════════════════════════════════
-                                                                           PAGE NAVIGATION
-                                                                        ══════════════════════════════════════════════════════════════ */
+                                                                                                   PAGE NAVIGATION
+                                                                                                ══════════════════════════════════════════════════════════════ */
             function showPage(page) {
                 document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
