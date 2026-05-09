@@ -845,8 +845,11 @@
                             <div class="col-6"><label class="form-label">Roll Number</label>
                                 <input type="text" class="form-control" placeholder="1, 2, 3...">
                             </div>
-                            <div class="col-12"><label class="form-label">Email</label>
+                            <div class="col-6"><label class="form-label">Email</label>
                                 <input type="email" class="form-control" placeholder="john@email.com">
+                            </div>
+                            <div class="col-6"><label class="form-label">Password</label>
+                                <input type="password" class="form-control" placeholder="abcd123....">
                             </div>
                             <div class="col-6"><label class="form-label">Phone</label>
                                 <input type="text" class="form-control" placeholder="+92 300...">
@@ -881,8 +884,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
         <script>
             /* ══════════════════════════════════════════════════════════════
-                           PAGE NAVIGATION
-                        ══════════════════════════════════════════════════════════════ */
+                                           PAGE NAVIGATION
+                                        ══════════════════════════════════════════════════════════════ */
             function showPage(page) {
                 document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
                 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));

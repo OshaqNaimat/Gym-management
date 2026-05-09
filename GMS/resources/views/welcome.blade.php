@@ -9,9 +9,9 @@
         <div class="bg-grid"></div>
 
         <!-- Theme Toggle -->
-        <button class="theme-toggle" onclick="toggleTheme()" title="Switch Theme" aria-label="Toggle theme">
+        {{-- <button class="theme-toggle" onclick="toggleTheme()" title="Switch Theme" aria-label="Toggle theme">
             <div class="toggle-knob" id="themeKnob">🌙</div>
-        </button>
+        </button> --}}
 
         <div class="container-fluid px-0" style="min-height:100vh;">
             <div class="row g-0" style="min-height:100vh;">
@@ -65,18 +65,26 @@
                         <div class="auth-card">
 
                             <!-- Tabs -->
-                            <div class="tab-bar">
-                                <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
-                                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+                            <div class="tab-bar ">
+                                <button class="tab-btn active" {{-- onclick="switchTab('login')" --}}>Sign In</button>
+                                {{-- <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button> --}}
                             </div>
 
+                            @if ($errors->any())
+                                <div style="color: red; background: #ffeeee; padding: 10px; margin-bottom: 10px;">
+                                    {{ $errors->first() }}
+                                </div>
+                            @endif
                             <!-- ── LOGIN ── -->
-                            <div class="form-section active" id="login">
+                            <form action="{{ route('login.post') }}" method="POST" class="form-section active"
+                                id="login">
+                                @csrf
                                 <div class="form-group">
                                     <label class="form-label">Email Address</label>
                                     <div class="input-icon-wrap">
                                         <span class="icon">✉</span>
-                                        <input type="email" class="form-control" placeholder="you@pumphouse.com" />
+                                        <input type="email" name="email" class="form-control"
+                                            placeholder="you@pumphouse.com" required />
                                     </div>
                                 </div>
 
@@ -84,42 +92,28 @@
                                     <label class="form-label">Password</label>
                                     <div class="input-icon-wrap">
                                         <span class="icon">🔒</span>
-                                        <input type="password" class="form-control" placeholder="••••••••" />
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label">Login As</label>
-                                    <div class="input-icon-wrap role-select-wrap">
-                                        <span class="icon">👤</span>
-                                        <select class="form-select" id="loginRole"
-                                            onchange="updateRoleBadge('loginRole','loginBadge')">
-                                            <option value="">-- Select Role --</option>
-                                            <option value="member">Member</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                        <span class="role-badge" id="loginBadge"></span>
+                                        <input type="password" name="password" class="form-control"
+                                            placeholder="••••••••" required />
                                     </div>
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mt-1">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="remember" />
+                                        <input class="form-check-input" type="checkbox" name="remember"
+                                            id="remember" />
                                         <label class="form-check-label" for="remember">Remember me</label>
                                     </div>
                                     <a href="#" class="form-link">Forgot password?</a>
                                 </div>
 
-                                <button class="btn-pump">Access Dashboard</button>
-
-                                <div class="or-divider">No account?&nbsp;
-                                    <a href="#" class="form-link"
-                                        onclick="switchTab('signup');return false;">Register here</a>
-                                </div>
-                            </div>
+                                <!-- Remove the <a> tag. The button should submit the form. -->
+                                <button type="submit" class="btn-pump">
+                                    Access Dashboard
+                                </button>
+                            </form>
 
                             <!-- ── SIGNUP ── -->
-                            <div class="form-section" id="signup">
+                            {{-- <div class="form-section" id="signup">
                                 <div class="row g-0">
                                     <div class="col-12 pe-2">
                                         <div class="form-group">
@@ -196,7 +190,7 @@
                                         onclick="switchTab('login');return false;">Sign in</a>
                                 </div>
                             </div>
-                            <!-- end forms -->
+                            <!-- end forms --> --}}
 
                         </div>
                     </div>
@@ -227,26 +221,6 @@
                 else if (val === 'member') badge.textContent = '🏋 MEMBER';
                 else badge.textContent = '';
             }
-            document.querySelector('#login .btn-pump').addEventListener('click', function() {
-                const email = document.querySelector('#login input[type="email"]').value.trim();
-                const password = document.querySelector('#login input[type="password"]').value.trim();
-                const role = document.getElementById('loginRole').value;
-
-                if (!email || !password) {
-                    alert('Please enter your email and password.');
-                    return;
-                }
-                if (!role) {
-                    alert('Please select a role.');
-                    return;
-                }
-
-                if (role === 'admin') {
-                    window.location.href = './admin-dashboard.php';
-                } else {
-                    window.location.href = './member-dashboard.php';
-                }
-            });
         </script>
     </body>
 
