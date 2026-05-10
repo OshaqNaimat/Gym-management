@@ -10,7 +10,7 @@
                     <div class="stat-card c1">
                         <div class="stat-icon"><i class="fa fa-users"></i></div>
                         <div class="stat-label">Active Members</div>
-                        <div class="stat-value">321</div>
+                        <div class="stat-value">{{ $memberCount }}</div>
                         <div class="stat-sub"><span class="up">↑ 12%</span> vs last month</div>
                     </div>
                 </div>
