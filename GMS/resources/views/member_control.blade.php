@@ -23,8 +23,6 @@
                 <div style="font-size:.8rem;color:var(--muted);">{{ $members->count() }} total members</div>
             </div>
             <div style="display:flex;gap:8px;">
-
-                {{-- Plan Filter --}}
                 <select class="form-select form-select-sm" style="width:140px;" id="planFilter">
                     <option value="all">All Plans</option>
                     <option value="Annual">Annual</option>
@@ -32,7 +30,6 @@
                     <option value="Quarterly">Quarterly</option>
                     <option value="Trial">Trial</option>
                 </select>
-
                 <button class="btn-accent" data-bs-toggle="modal" data-bs-target="#addMemberModal">
                     <i class="fa fa-plus me-1"></i> Add Member
                 </button>
@@ -80,7 +77,7 @@
                                         : ''),
                             );
                         @endphp
-                        <tr data-plan="{{ $member->plan }}" style="{{ $isExpired ? 'order:-1' : '' }}">
+                        <tr data-plan="{{ $member->plan }}">
                             <td>
                                 <div style="display:flex;align-items:center;">
                                     <div class="mem-avatar" style="background:{{ $color }};">{{ $initials }}
@@ -107,104 +104,98 @@
                                 </button>
                             </td>
                         </tr>
-
-                        {{-- Edit Modal for each member --}}
-                        <div class="modal fade" id="editMemberModal{{ $member->id }}" tabindex="-1">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Edit — {{ $member->name }}</h5>
-                                        <button type="button" class="btn-close btn-close-white"
-                                            data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <form action="{{ route('admin.updateMember', $member->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <div class="modal-body">
-                                            <div class="row g-3">
-                                                <div class="col-6">
-                                                    <label class="form-label">Full Name</label>
-                                                    <input type="text" name="name" class="form-control"
-                                                        value="{{ $member->name }}" required>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">Roll Number</label>
-                                                    <input type="text" name="roll_number" class="form-control"
-                                                        value="{{ $member->roll_number }}">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">Email</label>
-                                                    <input type="email" name="email" class="form-control"
-                                                        value="{{ $member->email }}" required>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">Phone</label>
-                                                    <input type="text" name="phone" class="form-control"
-                                                        value="{{ $member->phone }}">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">Plan</label>
-                                                    <select name="plan" class="form-select">
-                                                        <option value="Trial"
-                                                            {{ $member->plan == 'Trial' ? 'selected' : '' }}>Trial
-                                                        </option>
-                                                        <option value="Monthly"
-                                                            {{ $member->plan == 'Monthly' ? 'selected' : '' }}>
-                                                            Monthly</option>
-                                                        <option value="Quarterly"
-                                                            {{ $member->plan == 'Quarterly' ? 'selected' : '' }}>
-                                                            Quarterly</option>
-                                                        <option value="Annual"
-                                                            {{ $member->plan == 'Annual' ? 'selected' : '' }}>Annual
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">Amount</label>
-                                                    <input type="number" name="amount" class="form-control"
-                                                        value="{{ $member->amount }}" min="0">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">Gender</label>
-                                                    <select name="gender" class="form-select">
-                                                        <option value="Male"
-                                                            {{ $member->gender == 'Male' ? 'selected' : '' }}>Male
-                                                        </option>
-                                                        <option value="Female"
-                                                            {{ $member->gender == 'Female' ? 'selected' : '' }}>Female
-                                                        </option>
-                                                        <option value="Other"
-                                                            {{ $member->gender == 'Other' ? 'selected' : '' }}>Other
-                                                        </option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">New Password <small
-                                                            class="text-muted">(leave blank to keep)</small></label>
-                                                    <input type="password" name="password" class="form-control"
-                                                        minlength="6" placeholder="••••••">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="form-label">Confirm Password</label>
-                                                    <input type="password" name="password_confirmation"
-                                                        class="form-control" placeholder="••••••">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn-outline-accent"
-                                                data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn-accent">Save Changes</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+
+    {{-- ✅ Edit Modals — outside the table --}}
+    @foreach ($members as $member)
+        <div class="modal fade" id="editMemberModal{{ $member->id }}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit — {{ $member->name }}</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ route('admin.updateMember', $member->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="modal-body">
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" name="name" class="form-control"
+                                        value="{{ $member->name }}" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Roll Number</label>
+                                    <input type="text" name="roll_number" class="form-control"
+                                        value="{{ $member->roll_number }}">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control"
+                                        value="{{ $member->email }}" required>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" name="phone" class="form-control"
+                                        value="{{ $member->phone }}">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Plan</label>
+                                    <select name="plan" class="form-select">
+                                        <option value="Trial" {{ $member->plan == 'Trial' ? 'selected' : '' }}>
+                                            Trial</option>
+                                        <option value="Monthly" {{ $member->plan == 'Monthly' ? 'selected' : '' }}>
+                                            Monthly</option>
+                                        <option value="Quarterly" {{ $member->plan == 'Quarterly' ? 'selected' : '' }}>
+                                            Quarterly</option>
+                                        <option value="Annual" {{ $member->plan == 'Annual' ? 'selected' : '' }}>
+                                            Annual</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Amount</label>
+                                    <input type="number" name="amount" class="form-control"
+                                        value="{{ $member->amount }}" min="0">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Gender</label>
+                                    <select name="gender" class="form-select">
+                                        <option value="Male" {{ $member->gender == 'Male' ? 'selected' : '' }}>Male
+                                        </option>
+                                        <option value="Female" {{ $member->gender == 'Female' ? 'selected' : '' }}>
+                                            Female</option>
+                                        <option value="Other" {{ $member->gender == 'Other' ? 'selected' : '' }}>
+                                            Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">New Password
+                                        <small class="text-muted">(leave blank to keep)</small>
+                                    </label>
+                                    <input type="password" name="password" class="form-control" minlength="6"
+                                        placeholder="••••••">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Confirm Password</label>
+                                    <input type="password" name="password_confirmation" class="form-control"
+                                        placeholder="••••••">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-outline-accent" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn-accent">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
     {{-- Add Member Modal --}}
     <form action="{{ route('admin.addMember') }}" method="POST" class="modal fade" id="addMemberModal"
@@ -308,16 +299,13 @@
         </div>
     </form>
 
-    {{-- Plan Filter Script --}}
+    {{-- Scripts --}}
     <script>
+        // Plan filter
         document.getElementById('planFilter').addEventListener('change', function() {
             const plan = this.value;
             document.querySelectorAll('#membersTable tr').forEach(function(row) {
-                if (plan === 'all' || row.dataset.plan === plan) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                row.style.display = (plan === 'all' || row.dataset.plan === plan) ? '' : 'none';
             });
         });
 
