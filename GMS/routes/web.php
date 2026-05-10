@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MemberController;
@@ -33,4 +34,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/members-payments-control',   fn() => view('payments'))->name('admin.paymentsControl');
     Route::get('/membership',                 fn() => view('membership'))->name('admin.membership');
     Route::post('/admin/add-member', [MemberController::class, 'store'])->name('admin.addMember');
+    Route::get('/member-attendence-control', [AttendanceController::class, 'index'])->name('admin.attendanceControl');
+    Route::post('/admin/save-attendance', [AttendanceController::class, 'save'])->name('admin.saveAttendance');
 });
