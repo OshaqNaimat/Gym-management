@@ -23,18 +23,34 @@
                         <div class="member-name">{{ Auth::user()->name }}</div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
                             <span class="member-plan-badge"><i class="fa fa-crown" style="font-size:9px;"></i>
-                                Annual Plan</span>
-                            <span class="expiry-pill"><i class="fa fa-calendar" style="font-size:11px;"></i> Expires
-                                Feb 18, 2027</span>
+                                {{ Auth::user()->plan ?? 'No Plan' }}</span>
+                            @php
+                                $joinedAt = Auth::user()->created_at;
+                                $plan = Auth::user()->plan;
+
+                                $expiry = match ($plan) {
+                                    'Trial' => $joinedAt->copy()->addDay(),
+                                    'Monthly' => $joinedAt->copy()->addMonth(),
+                                    'Quarterly' => $joinedAt->copy()->addMonths(3),
+                                    'Annual' => $joinedAt->copy()->addYear(),
+                                    default => null,
+                                };
+                            @endphp
+                            <span class="expiry-pill">
+                                <i class="fa fa-calendar" style="font-size:11px;"></i>
+                                Expires {{ $expiry ? $expiry->format('M d, Y') : 'N/A' }}
+                            </span>
                         </div>
                     </div>
                     <div style="text-align:right;" class="d-none d-md-block">
                         <div
                             style="font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">
                             Member Since</div>
-                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);">Feb
-                            2025</div>
-                        <div style="font-size:11px;color:var(--muted);">Roll #0042</div>
+                        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--accent);">
+                            {{ Auth::user()->created_at->format('d M Y') }}
+                        </div>
+                        <div style="font-size:11px;color:var(--muted);">Roll #{{ Auth::user()->roll_number ?? 'N/A' }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -164,14 +180,14 @@
 
             <!-- Schedule + Recent Payments -->
             <div class="row g-3">
-                <div class="col-lg-7">
+                {{-- <div class="col-lg-7">
                     <div class="section-head">
                         <h2>This Week's Schedule</h2><button class="btn-outline-accent"
                             onclick="showPage('schedule')">Full Schedule</button>
                     </div>
                     <div class="chart-card" id="dash-schedule"></div>
-                </div>
-                <div class="col-lg-5">
+                </div> --}}
+                <div class="col-lg-12">
                     <div class="section-head">
                         <h2>Recent Payments</h2><button class="btn-outline-accent" onclick="showPage('payments')">View
                             All</button>
