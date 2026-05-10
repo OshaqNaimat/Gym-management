@@ -1,4 +1,17 @@
 <x-layout>
+
+    {{-- Flash Message --}}
+    @if (session('success'))
+        <div id="flash-message"
+            style="position:fixed;top:20px;right:20px;z-index:9999;background:#4ade80;color:#000;padding:15px 20px;border-radius:10px;font-weight:600;box-shadow:0 4px 15px rgba(0,0,0,0.3);">
+            ✅ {{ session('success') }}
+        </div>
+        <script>
+            setTimeout(function() {
+                document.getElementById('flash-message').style.display = 'none';
+            }, 3000); // disappears after 3 seconds
+        </script>
+    @endif
     <x-admin-navbar />
     <x-admin-sidebar />
     <div id="page-members" class="content">
@@ -152,12 +165,10 @@
                 </div>
                 <div class="modal-body">
 
-                    {{-- Success Message --}}
                     @if (session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
 
-                    {{-- Validation Errors --}}
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
@@ -173,7 +184,7 @@
                             <label class="form-label">Full Name</label>
                             <input type="text" name="name"
                                 class="form-control @error('name') is-invalid @enderror" placeholder="John Doe"
-                                value="{{ old('name') }}">
+                                value="{{ old('name') }}" required>
                             @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -193,20 +204,32 @@
                             <label class="form-label">Email</label>
                             <input type="email" name="email"
                                 class="form-control @error('email') is-invalid @enderror" placeholder="john@email.com"
-                                value="{{ old('email') }}">
+                                value="{{ old('email') }}" required>
                             @error('email')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="col-6">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password"
-                                class="form-control @error('password') is-invalid @enderror"
-                                placeholder="abcd123....">
+                            <label class="form-label">Password
+                                <small class="text-muted">(min. 6 characters)</small>
+                            </label>
+                            <input type="password" name="password" id="password"
+                                class="form-control @error('password') is-invalid @enderror" placeholder="abcd123...."
+                                minlength="6" required>
                             @error('password')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
+                        </div>
+
+                        {{-- Confirm Password --}}
+                        <div class="col-6">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" name="password_confirmation" id="password_confirmation"
+                                class="form-control" placeholder="Repeat password" minlength="6" required>
+                            <div class="invalid-feedback" id="password-match-error">
+                                Passwords do not match.
+                            </div>
                         </div>
 
                         <div class="col-6">
@@ -264,9 +287,37 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-outline-accent" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-accent">Add Member</button>
+                    <button type="submit" class="btn-accent" id="submit-btn">Add Member</button>
                 </div>
             </div>
         </div>
     </form>
+
+    {{-- Password match check --}}
+    <script>
+        document.getElementById('submit-btn').addEventListener('click', function(e) {
+            const password = document.getElementById('password').value;
+            const confirm = document.getElementById('password_confirmation').value;
+            const errorEl = document.getElementById('password-match-error');
+            const confirmInput = document.getElementById('password_confirmation');
+
+            if (password !== confirm) {
+                e.preventDefault(); // stop form submit
+                confirmInput.classList.add('is-invalid');
+                errorEl.style.display = 'block';
+            } else {
+                confirmInput.classList.remove('is-invalid');
+                errorEl.style.display = 'none';
+            }
+        });
+    </script>
+
+    {{-- Reopen modal if validation fails --}}
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                new bootstrap.Modal(document.getElementById('addMemberModal')).show();
+            });
+        </script>
+    @endif
 </x-layout>
