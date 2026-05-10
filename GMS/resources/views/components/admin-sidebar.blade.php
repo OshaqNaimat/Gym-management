@@ -24,9 +24,9 @@
             <i class="fa fa-credit-card"></i> Payments
         </a>
 
-        <a class="nav-item {{ request()->is('membership') ? 'active' : '' }}" href="/membership">
+        {{-- <a class="nav-item {{ request()->is('membership') ? 'active' : '' }}" href="/membership">
             <i class="fa fa-id-card"></i> Memberships
-        </a>
+        </a> --}}
         <div class="nav-section">System</div>
         <a class="nav-item {{ request()->is('admin-reports') ? 'active' : '' }}" href="/admin-reports">
             <i class="fa fa-chart-line"></i> Reports
