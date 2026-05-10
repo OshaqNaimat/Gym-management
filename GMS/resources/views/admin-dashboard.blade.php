@@ -235,5 +235,27 @@
             </div>
         </div>
     </div>
+    @if ($errors->any())
+        <div
+            style="position:fixed;top:20px;right:20px;z-index:9999;background:red;color:white;padding:15px;border-radius:8px;">
+            @foreach ($errors->all() as $error)
+                <p class="mb-0">{{ $error }}</p>
+            @endforeach
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div
+            style="position:fixed;top:20px;right:20px;z-index:9999;background:green;color:white;padding:15px;border-radius:8px;">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                new bootstrap.Modal(document.getElementById('addMemberModal')).show();
+            });
+        </script>
+    @endif
 
 </x-layout>

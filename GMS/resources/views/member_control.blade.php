@@ -151,43 +151,119 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
+
+                    {{-- Success Message --}}
+                    @if (session('success'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+
+                    {{-- Validation Errors --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="row g-3">
-                        <div class="col-6"><label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" placeholder="John Doe">
+                        <div class="col-6">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" name="name"
+                                class="form-control @error('name') is-invalid @enderror" placeholder="John Doe"
+                                value="{{ old('name') }}">
+                            @error('name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="col-6"><label class="form-label">Roll Number</label>
-                            <input type="text" class="form-control" placeholder="1, 2, 3...">
+
+                        <div class="col-6">
+                            <label class="form-label">Roll Number</label>
+                            <input type="text" name="roll_number"
+                                class="form-control @error('roll_number') is-invalid @enderror" placeholder="1, 2, 3..."
+                                value="{{ old('roll_number') }}">
+                            @error('roll_number')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="col-6"><label class="form-label">Email</label>
-                            <input type="email" class="form-control" placeholder="john@email.com">
+
+                        <div class="col-6">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email"
+                                class="form-control @error('email') is-invalid @enderror" placeholder="john@email.com"
+                                value="{{ old('email') }}">
+                            @error('email')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="col-6"><label class="form-label">Password</label>
-                            <input type="password" class="form-control" placeholder="abcd123....">
+
+                        <div class="col-6">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password"
+                                class="form-control @error('password') is-invalid @enderror"
+                                placeholder="abcd123....">
+                            @error('password')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="col-6"><label class="form-label">Phone</label>
-                            <input type="text" class="form-control" placeholder="+92 300...">
+
+                        <div class="col-6">
+                            <label class="form-label">Phone</label>
+                            <input type="text" name="phone"
+                                class="form-control @error('phone') is-invalid @enderror" placeholder="+92 300..."
+                                value="{{ old('phone') }}">
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="col-6"><label class="form-label">Plan</label>
-                            <select class="form-select">
-                                <option>Trial</option>
-                                <option>Monthly</option>
-                                <option>Quarterly</option>
-                                <option>Annual</option>
+
+                        <div class="col-6">
+                            <label class="form-label">Plan</label>
+                            <select name="plan" class="form-select @error('plan') is-invalid @enderror">
+                                <option value="Trial" {{ old('plan') == 'Trial' ? 'selected' : '' }}>Trial
+                                </option>
+                                <option value="Monthly" {{ old('plan') == 'Monthly' ? 'selected' : '' }}>Monthly
+                                </option>
+                                <option value="Quarterly" {{ old('plan') == 'Quarterly' ? 'selected' : '' }}>Quarterly
+                                </option>
+                                <option value="Annual" {{ old('plan') == 'Annual' ? 'selected' : '' }}>Annual
+                                </option>
                             </select>
+                            @error('plan')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="col-6"><label class="form-label">Amount</label>
-                            <input type="number" class="form-control" placeholder="e.g. 21" min="1"
-                                max="31">
+
+                        <div class="col-6">
+                            <label class="form-label">Amount</label>
+                            <input type="number" name="amount"
+                                class="form-control @error('amount') is-invalid @enderror" placeholder="e.g. 5000"
+                                min="0" value="{{ old('amount') }}">
+                            @error('amount')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
-                        <div class="col-6"><label class="form-label">Gender</label><select class="form-select">
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Other</option>
-                            </select></div>
+
+                        <div class="col-6">
+                            <label class="form-label">Gender</label>
+                            <select name="gender" class="form-select @error('gender') is-invalid @enderror">
+                                <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>Male</option>
+                                <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>Female
+                                </option>
+                                <option value="Other" {{ old('gender') == 'Other' ? 'selected' : '' }}>Other
+                                </option>
+                            </select>
+                            @error('gender')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
+
                 </div>
                 <div class="modal-footer">
-                    <button class="btn-outline-accent" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn-outline-accent" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn-accent">Add Member</button>
                 </div>
             </div>

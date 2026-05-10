@@ -8,11 +8,18 @@
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="chart-card" style="text-align:center;">
+                    @php
+                        $parts = explode(' ', Auth::user()->name);
+                        $initials = strtoupper(
+                            substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''),
+                        );
+                    @endphp
                     <div
                         style="width:90px;height:90px;border-radius:50%;background:var(--accent);color:#000;font-family:'Bebas Neue',sans-serif;font-size:32px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:3px solid rgba(245,197,24,.3);">
-                        AK</div>
-                    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;">Alex
-                        Kim
+                        {{ $initials }}
+                    </div>
+                    <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;">
+                        {{ Auth::user()->name }}
                     </div>
                     <div style="font-size:12px;color:var(--muted);margin-top:4px;">Roll #0042</div>
                     <span class="member-plan-badge" style="margin-top:10px;display:inline-flex;"><i class="fa fa-crown"

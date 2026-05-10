@@ -23,7 +23,7 @@
             <div class="member-chip">
                 <div class="member-avatar-sm">AK</div>
                 <div>
-                    <div class="name">Alex Kim</div>
+                    <div class="name">{{ Auth::user()->name }}</div>
                     <div class="role">Annual Member</div>
                 </div>
             </div>

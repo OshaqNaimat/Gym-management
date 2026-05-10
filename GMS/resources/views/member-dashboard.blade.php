@@ -9,12 +9,18 @@
             <!-- Hero Member Card -->
             <div class="hero-card mb-4">
                 <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
-                    <div class="member-big-avatar">AK</div>
+                    @php
+                        $parts = explode(' ', Auth::user()->name);
+                        $initials = strtoupper(
+                            substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''),
+                        );
+                    @endphp
+                    <div class="member-big-avatar"> {{ $initials }}</div>
                     <div style="flex:1;">
                         <div
                             style="font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">
                             Welcome back</div>
-                        <div class="member-name">Alex Kim</div>
+                        <div class="member-name">{{ Auth::user()->name }}</div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
                             <span class="member-plan-badge"><i class="fa fa-crown" style="font-size:9px;"></i>
                                 Annual Plan</span>

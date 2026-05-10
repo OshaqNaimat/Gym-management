@@ -11,38 +11,72 @@ public function showLogin()
 {
     return view('welcome');
 }
+    // public function login(Request $request)
+    // {
+    //     $credentials = $request->validate([
+    //         'email' => 'required|email',
+    //         'password' => 'required',
+    //     ]);
+
+//         if (Auth::attempt($credentials, $request->has('remember'))) {
+//             $request->session()->regenerate();
+
+//             $user = Auth::user();
+
+//             // Check role and redirect
+//             if ($user->role === 'admin') {
+//                 return redirect()->route('admin.dash');
+//             }
+//             if (Auth::attempt($credentials, $request->has('remember'))) {
+//     $request->session()->regenerate();
+//     $user = Auth::user();
+
+//     dd($user); // 👈 dump here — check role value in browser
+// }
+
+//             return redirect()->route('member.dash');
+//         }
+
+// if (Auth::attempt($credentials, $request->has('remember'))) {
+//     $request->session()->regenerate();
+//     $user = Auth::user();
+
+//     if ($user->role === 'admin') {
+//         return redirect()->route('admin.dash');
+//     }
+
+//     return redirect()->route('member.dash');
+// }
+
+
+//         return back()->withErrors([
+//             'email' => 'The provided credentials do not match our records.',
+//         ]);
+
+    // }
     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+{
+    $credentials = $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required',
+    ]);
 
-        if (Auth::attempt($credentials, $request->has('remember'))) {
-            $request->session()->regenerate();
+    if (Auth::attempt($credentials, $request->has('remember'))) {
+        $request->session()->regenerate();
 
-            $user = Auth::user();
+        $user = Auth::user();
 
-            // Check role and redirect
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dash');
-            }
-            if (Auth::attempt($credentials, $request->has('remember'))) {
-    $request->session()->regenerate();
-    $user = Auth::user();
-
-    dd($user); // 👈 dump here — check role value in browser
-}
-
-            return redirect()->route('member.dash');
+        if ($user->role === 'admin') {
+            return redirect()->intended(route('admin.dash'));
         }
 
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
-
+        return redirect()->intended(route('member.dash'));
     }
+
+    return back()->withErrors([
+        'email' => 'The provided credentials do not match our records.',
+    ])->onlyInput('email');
+}
    public function logout(Request $request)
 {
     Auth::logout();

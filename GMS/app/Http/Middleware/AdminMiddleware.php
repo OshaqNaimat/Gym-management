@@ -9,16 +9,26 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    public function handle(Request $request, Closure $next): Response
+    // public function handle(Request $request, Closure $next): Response
+    // {
+    //     1. Check if the user is logged in
+    //     2. Check if their 'role' column in MySQL is 'admin'
+    //     if (Auth::check() && Auth::user()->role === 'admin') {
+    //         return $next($request);
+    //     }
+
+    //     If not admin, redirect back to login or member dashboard
+    //     return redirect('/login')->with('error', 'Access denied. Admins only.');
+    // }
+
+
+    public function handle(Request $request, Closure $next)
     {
-        // 1. Check if the user is logged in
-        // 2. Check if their 'role' column in MySQL is 'admin'
         if (Auth::check() && Auth::user()->role === 'admin') {
             return $next($request);
-        }
+            }
 
-        // If not admin, redirect back to login or member dashboard
-        return redirect('/login')->with('error', 'Access denied. Admins only.');
-    }
-
+            return redirect()->route('member.dash');
+            }
 }
+
