@@ -937,7 +937,6 @@
 
     /* ── Init ── */
     buildCharts();
-    DATA══════════════════════════════════════════ * /
     const scheduleData = [{
             day: 'Mon',
             date: 17,

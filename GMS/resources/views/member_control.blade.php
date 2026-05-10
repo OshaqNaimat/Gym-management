@@ -142,7 +142,8 @@
         </div>
     </div>
     {{-- add a member form --}}
-    <form class="modal fade" id="addMemberModal" tabindex="-1">
+    <form action="{{ route('admin.addMember') }}" method="POST" class="modal fade" id="addMemberModal" tabindex="-1">
+        @csrf
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -187,7 +188,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn-outline-accent" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn-accent" data-bs-dismiss="modal">Add Member</button>
+                    <button type="submit" class="btn-accent">Add Member</button>
                 </div>
             </div>
         </div>

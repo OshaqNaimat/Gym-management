@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MemberController;
 
 // Public Routes
 Route::get('/', function () {
@@ -42,4 +43,6 @@ Route::middleware(['auth'])->group(function () {
     Route::view('/member-payment','member-payment');
     Route::view('/member-profile','member-profile');
 
+
+    Route::post('/admin/add-member', [MemberController::class, 'store'])->name('admin.addMember');
 });

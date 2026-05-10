@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
 
+public function showLogin()
+{
+    return view('welcome');
+}
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -23,6 +27,12 @@ class AuthController extends Controller
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dash');
             }
+            if (Auth::attempt($credentials, $request->has('remember'))) {
+    $request->session()->regenerate();
+    $user = Auth::user();
+
+    dd($user); // 👈 dump here — check role value in browser
+}
 
             return redirect()->route('member.dash');
         }
@@ -31,6 +41,7 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
         ]);
+
     }
    public function logout(Request $request)
 {
@@ -39,4 +50,6 @@ class AuthController extends Controller
     $request->session()->regenerateToken();
     return redirect('/');
 }
+
+
 }
