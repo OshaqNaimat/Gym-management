@@ -13,9 +13,9 @@
         href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgLg9B8z_PbnST8PeJJGHOdj_hLLTVej8xGQ&s"
         type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-
-
     <link rel="stylesheet" href="/Style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
     <title>GMS</title>
 
 
@@ -471,6 +471,472 @@
     // ── Init ──────────────────────────────────────────────────────────────────────
     renderChart("revenue-chart", revenueData, months, "var(--accent)");
     renderChart("attend-chart", attendData, weekDays, "#4fc3f7");
+
+
+
+
+    function showPage(page) {
+        document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+        const el = document.getElementById('page-' + page);
+        if (el) {
+            el.style.display = 'block';
+            el.style.animation = 'none';
+            void el.offsetWidth;
+            el.style.animation = '';
+        }
+
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(n => {
+            if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) n.classList
+                .add('active');
+        });
+
+        const titles = {
+            dashboard: 'Dashboard',
+            members: 'Members',
+            attendance: 'Attendance',
+            payments: 'Payments',
+            memberships: 'Memberships',
+            reports: 'Reports',
+            settings: 'Settings'
+        };
+        document.getElementById('page-title').textContent = titles[page] || page;
+
+        if (page === 'attendance') initAttendance();
+        if (page === 'dashboard') buildCharts();
+
+        // close mobile sidebar
+        document.getElementById('sidebar').classList.remove('open');
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       THEME TOGGLE
+    ══════════════════════════════════════════════════════════════ */
+    function toggleTheme() {
+        document.body.classList.toggle('light');
+        const icon = document.getElementById('themeIcon');
+        icon.className = document.body.classList.contains('light') ? 'fa fa-sun' : 'fa fa-moon';
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       CHARTS (simple bar charts)
+    ══════════════════════════════════════════════════════════════ */
+    function buildBar(containerId, data, color) {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        const max = Math.max(...data.map(d => d.v));
+        el.innerHTML = data.map(d => `
+    <div class="bar-wrap">
+      <div class="bar" style="height:${Math.round((d.v/max)*100)}%;background:${color||'var(--accent)'};"></div>
+      <div class="bar-label">${d.l}</div>
+    </div>`).join('');
+    }
+
+    function buildCharts() {
+        buildBar('revenue-chart', [{
+                l: 'Sep',
+                v: 38000
+            }, {
+                l: 'Oct',
+                v: 42000
+            }, {
+                l: 'Nov',
+                v: 39000
+            }, {
+                l: 'Dec',
+                v: 44000
+            },
+            {
+                l: 'Jan',
+                v: 46000
+            }, {
+                l: 'Feb',
+                v: 48290
+            }
+        ]);
+        buildBar('attend-chart', [{
+            l: 'Mon',
+            v: 210
+        }, {
+            l: 'Tue',
+            v: 185
+        }, {
+            l: 'Wed',
+            v: 230
+        }, {
+            l: 'Thu',
+            v: 195
+        }, {
+            l: 'Fri',
+            v: 260
+        }, {
+            l: 'Sat',
+            v: 140
+        }, {
+            l: 'Sun',
+            v: 90
+        }], '#4fc3f7');
+        buildBar('signup-chart', [{
+            l: 'Sep',
+            v: 98
+        }, {
+            l: 'Oct',
+            v: 112
+        }, {
+            l: 'Nov',
+            v: 89
+        }, {
+            l: 'Dec',
+            v: 120
+        }, {
+            l: 'Jan',
+            v: 135
+        }, {
+            l: 'Feb',
+            v: 142
+        }]);
+    }
+
+    /* ══════════════════════════════════════════════════════════════
+       ATTENDANCE
+    ══════════════════════════════════════════════════════════════ */
+    const attendanceMembers = [{
+            id: 1,
+            name: 'Alex Kim',
+            initials: 'AK',
+            color: '#e8ff47',
+            plan: 'Annual'
+        },
+        {
+            id: 2,
+            name: 'Sara Reed',
+            initials: 'SR',
+            color: '#4fc3f7',
+            plan: 'Monthly'
+        },
+        {
+            id: 3,
+            name: 'Mike Osei',
+            initials: 'MO',
+            color: '#a78bfa',
+            plan: 'Trial'
+        },
+        {
+            id: 4,
+            name: 'Jane Park',
+            initials: 'JP',
+            color: '#fb923c',
+            plan: 'Quarterly'
+        },
+        {
+            id: 5,
+            name: 'Leo Chen',
+            initials: 'LC',
+            color: '#4ade80',
+            plan: 'Annual'
+        },
+        {
+            id: 6,
+            name: 'Raza Ali',
+            initials: 'RA',
+            color: '#f472b6',
+            plan: 'Monthly'
+        },
+        {
+            id: 7,
+            name: 'Nina Shah',
+            initials: 'NS',
+            color: '#facc15',
+            plan: 'Annual'
+        },
+        {
+            id: 8,
+            name: 'Omar Farooq',
+            initials: 'OF',
+            color: '#38bdf8',
+            plan: 'Quarterly'
+        },
+    ];
+
+    // attStatus[id] = null | 'present' | 'absent'
+    let attStatus = {};
+    // timein[id] = string time when marked present
+    let attTimeIn = {};
+    let attHistory = [];
+
+    try {
+        attHistory = JSON.parse(localStorage.getItem('ph_attHistory') || '[]');
+    } catch (e) {}
+
+    function initAttendance() {
+        const today = new Date();
+        const dateStr = today.toISOString().split('T')[0];
+        const picker = document.getElementById('att-date-picker');
+        if (!picker.value) picker.value = dateStr;
+        updateDateLabel(picker.value);
+
+        // Load saved status for this date if exists
+        const saved = attHistory.find(r => r.date === picker.value);
+        attStatus = {};
+        attTimeIn = {};
+        if (saved) {
+            saved.records.forEach(r => {
+                attStatus[r.id] = r.status;
+                attTimeIn[r.id] = r.timeIn || '—';
+            });
+        } else {
+            attendanceMembers.forEach(m => {
+                attStatus[m.id] = null;
+                attTimeIn[m.id] = '—';
+            });
+        }
+
+        renderAttTable();
+        renderAttHistory();
+    }
+
+    function updateDateLabel(dateStr) {
+        const d = new Date(dateStr + 'T00:00:00');
+        const label = d.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('att-date-label').textContent =
+            (dateStr === today ? 'Today · ' : 'Viewing · ') + label;
+    }
+
+    function onDateChange() {
+        const date = document.getElementById('att-date-picker').value;
+        updateDateLabel(date);
+
+        const saved = attHistory.find(r => r.date === date);
+        attStatus = {};
+        attTimeIn = {};
+        if (saved) {
+            saved.records.forEach(r => {
+                attStatus[r.id] = r.status;
+                attTimeIn[r.id] = r.timeIn || '—';
+            });
+        } else {
+            attendanceMembers.forEach(m => {
+                attStatus[m.id] = null;
+                attTimeIn[m.id] = '—';
+            });
+        }
+        renderAttTable();
+    }
+
+    function renderAttTable() {
+        const filter = (document.getElementById('att-search')?.value || '').toLowerCase();
+        const tbody = document.getElementById('att-table-body');
+        const filtered = attendanceMembers.filter(m => m.name.toLowerCase().includes(filter));
+
+        tbody.innerHTML = filtered.map((m, i) => {
+            const s = attStatus[m.id];
+            const t = attTimeIn[m.id] || '—';
+            return `
+    <tr>
+      <td style="color:var(--muted);font-size:.85rem;">${i+1}</td>
+      <td>
+        <div style="display:flex;align-items:center;">
+          <div class="mem-avatar" style="background:${m.color};color:#000;">${m.initials}</div>
+          <span style="font-weight:500;">${m.name}</span>
+        </div>
+      </td>
+      <td><span style="font-size:.8rem;color:var(--muted);">${m.plan}</span></td>
+      <td style="font-size:.85rem;color:var(--muted);">${s==='present' ? t : '—'}</td>
+      <td>${statusBadge(s)}</td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button
+            class="att-mark-btn present ${s==='present'?'active':''}"
+            onclick="markMember(${m.id},'present')"
+            title="Mark Present">
+            <i class="fa fa-check"></i> Present
+          </button>
+          <button
+            class="att-mark-btn absent ${s==='absent'?'active':''}"
+            onclick="markMember(${m.id},'absent')"
+            title="Mark Absent">
+            <i class="fa fa-xmark"></i> Absent
+          </button>
+        </div>
+      </td>
+    </tr>`;
+        }).join('');
+
+        updateAttStats();
+    }
+
+    function statusBadge(s) {
+        if (s === 'present') return `<span class="badge-status badge-active">Present</span>`;
+        if (s === 'absent') return `<span class="badge-status badge-expired">Absent</span>`;
+        return `<span class="badge-status badge-trial" style="color:var(--muted);">—</span>`;
+    }
+
+    function markMember(id, status) {
+        if (attStatus[id] === status) {
+            // toggle off
+            attStatus[id] = null;
+            attTimeIn[id] = '—';
+        } else {
+            attStatus[id] = status;
+            attTimeIn[id] = status === 'present' ? now() : '—';
+        }
+        renderAttTable();
+    }
+
+    function markAll(status) {
+        attendanceMembers.forEach(m => {
+            attStatus[m.id] = status;
+            attTimeIn[m.id] = status === 'present' ? now() : '—';
+        });
+        renderAttTable();
+    }
+
+    function resetAll() {
+        attendanceMembers.forEach(m => {
+            attStatus[m.id] = null;
+            attTimeIn[m.id] = '—';
+        });
+        document.getElementById('att-search').value = '';
+        renderAttTable();
+    }
+
+    function updateAttStats() {
+        const total = attendanceMembers.length;
+        const present = Object.values(attStatus).filter(s => s === 'present').length;
+        const absent = Object.values(attStatus).filter(s => s === 'absent').length;
+        const rate = total ? Math.round((present / total) * 100) : 0;
+
+        document.getElementById('att-total').textContent = total;
+        document.getElementById('att-present').textContent = present;
+        document.getElementById('att-absent').textContent = absent;
+        document.getElementById('att-rate').textContent = rate + '%';
+    }
+
+    function saveAttendance() {
+        const date = document.getElementById('att-date-picker').value;
+        if (!date) {
+            showToast('Please select a date first!', true);
+            return;
+        }
+
+        const records = attendanceMembers.map(m => ({
+            id: m.id,
+            name: m.name,
+            plan: m.plan,
+            status: attStatus[m.id] || 'unmarked',
+            timeIn: attTimeIn[m.id] || '—'
+        }));
+        const present = records.filter(r => r.status === 'present').length;
+        const rate = Math.round((present / records.length) * 100) + '%';
+
+        // upsert by date
+        attHistory = attHistory.filter(r => r.date !== date);
+        attHistory.unshift({
+            date,
+            savedAt: now(),
+            records,
+            rate
+        });
+        if (attHistory.length > 15) attHistory.pop();
+
+        try {
+            localStorage.setItem('ph_attHistory', JSON.stringify(attHistory));
+        } catch (e) {}
+        renderAttHistory();
+        showToast('✅ Attendance saved for ' + date);
+    }
+
+    function renderAttHistory() {
+        const el = document.getElementById('att-history');
+        if (!attHistory.length) {
+            el.innerHTML =
+                `<div style="color:var(--muted);font-size:.85rem;text-align:center;padding:24px;">No saved records yet. Mark attendance and click Save.</div>`;
+            return;
+        }
+
+        el.innerHTML = attHistory.map(r => {
+            const present = r.records.filter(x => x.status === 'present');
+            const absent = r.records.filter(x => x.status === 'absent');
+            return `
+    <div class="history-entry">
+      <div class="history-date">
+        <div class="hd">${formatDate(r.date)}</div>
+        <div class="ht">${r.savedAt}</div>
+      </div>
+      <div style="flex:1;display:flex;flex-wrap:wrap;align-items:center;">
+        ${present.map(p => `<span class="name-pill p"><i class="fa fa-check" style="font-size:9px;"></i> ${p.name}</span>`).join('')}
+        ${absent.map(a  => `<span class="name-pill a"><i class="fa fa-xmark" style="font-size:9px;"></i> ${a.name}</span>`).join('')}
+        ${!present.length && !absent.length ? `<span style="color:var(--muted);font-size:.8rem;">No records marked</span>` : ''}
+      </div>
+      <div class="history-rate">${r.rate}</div>
+    </div>`;
+        }).join('');
+    }
+
+    function clearHistory() {
+        if (!confirm('Clear all attendance history?')) return;
+        attHistory = [];
+        try {
+            localStorage.removeItem('ph_attHistory');
+        } catch (e) {}
+        renderAttHistory();
+        showToast('History cleared');
+    }
+
+    function exportAttendance() {
+        const date = document.getElementById('att-date-picker').value;
+        let csv = 'Name,Plan,Status,Time In\n';
+        attendanceMembers.forEach(m => {
+            const s = attStatus[m.id] || 'Unmarked';
+            const t = attTimeIn[m.id] || '—';
+            csv += `"${m.name}","${m.plan}","${s}","${s === 'present' ? t : '—'}"\n`;
+        });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([csv], {
+            type: 'text/csv'
+        }));
+        a.download = `attendance-${date || 'export'}.csv`;
+        a.click();
+        showToast('📥 CSV downloaded!');
+    }
+
+    /* ── Helpers ── */
+    function now() {
+        return new Date().toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    function formatDate(ds) {
+        const d = new Date(ds + 'T00:00:00');
+        return d.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    }
+
+    function showToast(msg, isErr) {
+        const t = document.createElement('div');
+        t.className = 'toast-msg';
+        t.style.background = isErr ? '#ff4757' : 'var(--accent)';
+        t.style.color = isErr ? '#fff' : '#000';
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2800);
+    }
+
+    /* ── Init ── */
+    buildCharts();
 </script>
 
 </html>

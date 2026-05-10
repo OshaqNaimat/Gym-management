@@ -27,5 +27,9 @@ Route::middleware(['auth'])->group(function () {
         })->name('admin.dash');
     });
 
+    Route::view('/member-control','member_control');
+    Route::view('/member-attendence','attendence-control');
+    Route::view('/admin-dashboard','admin-dashboard');
+
 
 });
