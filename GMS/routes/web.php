@@ -4,6 +4,7 @@ use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PaymentController;
 
 // Public Routes
 Route::get('/', function () {
@@ -36,4 +37,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/add-member', [MemberController::class, 'store'])->name('admin.addMember');
     Route::get('/member-attendence-control', [AttendanceController::class, 'index'])->name('admin.attendanceControl');
     Route::post('/admin/save-attendance', [AttendanceController::class, 'save'])->name('admin.saveAttendance');
+      Route::get('/members-payments-control', [PaymentController::class, 'index'])->name('admin.paymentsControl');
+    Route::post('/admin/add-payment', [PaymentController::class, 'store'])->name('admin.addPayment');
+    Route::get('/admin/export-payments', [PaymentController::class, 'export'])->name('admin.exportPayments');
 });
