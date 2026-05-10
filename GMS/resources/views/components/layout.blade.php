@@ -937,6 +937,395 @@
 
     /* ── Init ── */
     buildCharts();
+    DATA══════════════════════════════════════════ * /
+    const scheduleData = [{
+            day: 'Mon',
+            date: 17,
+            type: 'Strength',
+            time: '6:00 AM',
+            tag: 'done',
+            tagLabel: 'Done'
+        },
+        {
+            day: 'Tue',
+            date: 18,
+            type: 'Cardio',
+            time: '7:00 AM',
+            tag: 'done',
+            tagLabel: 'Done'
+        },
+        {
+            day: 'Wed',
+            date: 19,
+            type: 'Rest Day',
+            time: '—',
+            tag: 'rest',
+            tagLabel: 'Rest'
+        },
+        {
+            day: 'Thu',
+            date: 20,
+            type: 'Strength',
+            time: '6:00 AM',
+            tag: 'done',
+            tagLabel: 'Done'
+        },
+        {
+            day: 'Fri',
+            date: 21,
+            type: 'HIIT',
+            time: '6:30 AM',
+            tag: 'today',
+            tagLabel: 'Today'
+        },
+        {
+            day: 'Sat',
+            date: 22,
+            type: 'Strength',
+            time: '8:00 AM',
+            tag: '',
+            tagLabel: 'Upcoming'
+        },
+        {
+            day: 'Sun',
+            date: 23,
+            type: 'Rest Day',
+            time: '—',
+            tag: 'rest',
+            tagLabel: 'Rest'
+        },
+    ];
+
+    const attLog = [{
+            date: 'Feb 21',
+            day: 'Friday',
+            cin: '6:34 AM',
+            cout: '8:10 AM',
+            dur: '1h 36m',
+            status: 'present'
+        },
+        {
+            date: 'Feb 20',
+            day: 'Thursday',
+            cin: '6:28 AM',
+            cout: '8:05 AM',
+            dur: '1h 37m',
+            status: 'present'
+        },
+        {
+            date: 'Feb 19',
+            day: 'Wednesday',
+            cin: '—',
+            cout: '—',
+            dur: '—',
+            status: 'absent'
+        },
+        {
+            date: 'Feb 18',
+            day: 'Tuesday',
+            cin: '7:02 AM',
+            cout: '8:30 AM',
+            dur: '1h 28m',
+            status: 'present'
+        },
+        {
+            date: 'Feb 17',
+            day: 'Monday',
+            cin: '6:15 AM',
+            cout: '7:58 AM',
+            dur: '1h 43m',
+            status: 'present'
+        },
+        {
+            date: 'Feb 15',
+            day: 'Saturday',
+            cin: '8:10 AM',
+            cout: '9:45 AM',
+            dur: '1h 35m',
+            status: 'present'
+        },
+        {
+            date: 'Feb 13',
+            day: 'Thursday',
+            cin: '6:40 AM',
+            cout: '8:00 AM',
+            dur: '1h 20m',
+            status: 'present'
+        },
+        {
+            date: 'Feb 12',
+            day: 'Wednesday',
+            cin: '—',
+            cout: '—',
+            dur: '—',
+            status: 'absent'
+        },
+        {
+            date: 'Feb 10',
+            day: 'Monday',
+            cin: '6:20 AM',
+            cout: '7:55 AM',
+            dur: '1h 35m',
+            status: 'present'
+        },
+    ];
+
+    /* ══════════════════════════════════════════
+       PAGE NAVIGATION
+    ══════════════════════════════════════════ */
+    function showPage(page) {
+        document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+        const el = document.getElementById('page-' + page);
+        if (el) {
+            el.style.display = 'block';
+            el.style.animation = 'none';
+            void el.offsetWidth;
+            el.style.animation = '';
+        }
+
+        document.querySelectorAll('.nav-item').forEach(n => {
+            if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) n.classList
+                .add('active');
+        });
+
+        const titles = {
+            dashboard: 'Dashboard',
+            attendance: 'My Attendance',
+            schedule: 'Schedule',
+            payments: 'My Payments',
+            membership: 'My Membership',
+            announcements: 'Announcements',
+            profile: 'My Profile'
+        };
+        document.getElementById('page-title').textContent = titles[page] || page;
+
+        if (page === 'dashboard') {
+            buildDashCharts();
+            buildDashSchedule();
+        }
+        if (page === 'attendance') {
+            buildAttCalendar();
+            buildAttLog();
+        }
+        if (page === 'schedule') {
+            buildFullSchedule();
+        }
+
+        document.getElementById('sidebar').classList.remove('open');
+    }
+
+    /* ══════════════════════════════════════════
+       THEME
+    ══════════════════════════════════════════ */
+    function toggleTheme() {
+        document.body.classList.toggle('light');
+        document.getElementById('themeIcon').className =
+            document.body.classList.contains('light') ? 'fa fa-sun' : 'fa fa-moon';
+    }
+
+    /* ══════════════════════════════════════════
+       BAR CHART
+    ══════════════════════════════════════════ */
+    function buildBar(id, data, color) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const max = Math.max(...data.map(d => d.v));
+        el.innerHTML = data.map(d => `
+    <div class="bar-wrap">
+      <div class="bar" style="height:${Math.round((d.v/max)*100)}%;background:${color||'var(--accent)'};"></div>
+      <div class="bar-label">${d.l}</div>
+    </div>`).join('');
+    }
+
+    let attTabMode = 'monthly';
+
+    function buildDashCharts() {
+        const monthly = [{
+            l: 'Sep',
+            v: 16
+        }, {
+            l: 'Oct',
+            v: 18
+        }, {
+            l: 'Nov',
+            v: 14
+        }, {
+            l: 'Dec',
+            v: 20
+        }, {
+            l: 'Jan',
+            v: 19
+        }, {
+            l: 'Feb',
+            v: 22
+        }];
+        const weekly = [{
+            l: 'Mon',
+            v: 1
+        }, {
+            l: 'Tue',
+            v: 1
+        }, {
+            l: 'Wed',
+            v: 0
+        }, {
+            l: 'Thu',
+            v: 1
+        }, {
+            l: 'Fri',
+            v: 1
+        }, {
+            l: 'Sat',
+            v: 1
+        }, {
+            l: 'Sun',
+            v: 0
+        }];
+        buildBar('member-att-chart', attTabMode === 'monthly' ? monthly : weekly);
+    }
+
+    function switchAttTab(btn, mode) {
+        document.querySelectorAll('.tab-nav .tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        attTabMode = mode;
+        buildDashCharts();
+    }
+
+    /* ══════════════════════════════════════════
+       DASHBOARD SCHEDULE (mini)
+    ══════════════════════════════════════════ */
+    function buildDashSchedule() {
+        const el = document.getElementById('dash-schedule');
+        if (!el) return;
+        el.innerHTML = scheduleData.map(s => `
+    <div class="schedule-row">
+      <div class="sched-day ${s.tag==='today'?'today':''}">
+        <div>${s.day}</div>
+        <div class="dd">${s.date}</div>
+      </div>
+      <div class="sched-info">
+        <div class="sn">${s.type}</div>
+        <div class="st">${s.time}</div>
+      </div>
+      <span class="sched-tag ${s.tag}">${s.tagLabel}</span>
+    </div>`).join('');
+    }
+
+    /* ══════════════════════════════════════════
+       FULL SCHEDULE PAGE
+    ══════════════════════════════════════════ */
+    function buildFullSchedule() {
+        const el = document.getElementById('full-schedule');
+        if (!el) return;
+        el.innerHTML = scheduleData.map(s => `
+    <div class="schedule-row">
+      <div class="sched-day ${s.tag==='today'?'today':''}">
+        <div>${s.day}</div>
+        <div class="dd">${s.date}</div>
+      </div>
+      <div class="sched-info" style="flex:1;">
+        <div class="sn">${s.type}</div>
+        <div class="st">${s.time !== '—' ? '<i class="fa fa-clock" style="font-size:10px;"></i> ' + s.time : 'Rest Day'}</div>
+      </div>
+      <span class="sched-tag ${s.tag}">${s.tagLabel}</span>
+    </div>`).join('');
+    }
+
+    /* ══════════════════════════════════════════
+       ATTENDANCE CALENDAR
+    ══════════════════════════════════════════ */
+    function buildAttCalendar() {
+        const el = document.getElementById('att-calendar');
+        if (!el) return;
+
+        // Feb 2026 starts on Sunday
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        // Day headers
+        let html = days.map(d =>
+            `<div style="text-align:center;font-size:10px;letter-spacing:1px;color:var(--muted);padding:4px 0;">${d}</div>`
+        ).join('');
+
+        // Feb 1 2026 = Sunday (0)
+        const present = [2, 3, 4, 6, 9, 10, 11, 13, 16, 17, 18, 20, 23, 24, 25, 27];
+        const absent = [5, 12, 19, 26];
+
+        for (let d = 1; d <= 28; d++) {
+            const isPresent = present.includes(d);
+            const isAbsent = absent.includes(d);
+            const isToday = d === 22;
+            let bg = 'var(--surface2)';
+            let color = 'var(--muted)';
+            let border = 'var(--border)';
+            if (isPresent) {
+                bg = 'rgba(74,222,128,.18)';
+                color = '#4ade80';
+                border = 'rgba(74,222,128,.3)';
+            }
+            if (isAbsent) {
+                bg = 'rgba(255,71,87,.15)';
+                color = '#ff4757';
+                border = 'rgba(255,71,87,.25)';
+            }
+            if (isToday) {
+                border = 'var(--accent)';
+            }
+            html += `<div style="
+      aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      border-radius:8px;background:${bg};border:1px solid ${border};color:${color};
+      font-size:13px;font-weight:600;position:relative;cursor:default;
+    ">
+      ${d}
+      ${isPresent ? '<i class="fa fa-check" style="font-size:8px;position:absolute;bottom:4px;"></i>' : ''}
+      ${isAbsent  ? '<i class="fa fa-xmark" style="font-size:8px;position:absolute;bottom:4px;"></i>' : ''}
+      ${isToday   ? '<div style="position:absolute;top:3px;right:4px;width:5px;height:5px;border-radius:50%;background:var(--accent);"></div>' : ''}
+    </div>`;
+        }
+        el.innerHTML = html;
+    }
+
+    /* ══════════════════════════════════════════
+       ATTENDANCE LOG TABLE
+    ══════════════════════════════════════════ */
+    function buildAttLog() {
+        const tbody = document.getElementById('att-log-body');
+        if (!tbody) return;
+        tbody.innerHTML = attLog.map(r => `
+    <tr>
+      <td style="font-weight:600;">${r.date}</td>
+      <td style="color:var(--muted);">${r.day}</td>
+      <td>${r.cin}</td>
+      <td>${r.cout}</td>
+      <td style="font-weight:600;color:var(--accent);">${r.dur}</td>
+      <td><span class="badge-status ${r.status==='present'?'badge-active':'badge-expired'}">${r.status==='present'?'Present':'Absent'}</span></td>
+    </tr>`).join('');
+    }
+
+    /* ══════════════════════════════════════════
+       INIT
+    ══════════════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', () => {
+        buildDashCharts();
+        buildDashSchedule();
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        // Get current page URL path
+        const currentPath = window.location.pathname;
+
+        // Select all nav-items
+        const navItems = document.querySelectorAll('.nav-item');
+
+        navItems.forEach(item => {
+            // Remove active class from everyone first
+            item.classList.remove('active');
+
+            // If the link's href matches the current path, add 'active'
+            if (item.getAttribute('href') === currentPath) {
+                item.classList.add('active');
+            }
+        });
+    });
 </script>
 
 </html>

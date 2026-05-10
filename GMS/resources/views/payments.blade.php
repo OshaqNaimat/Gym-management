@@ -1,4 +1,6 @@
 <x-layout>
+    <x-admin-navbar />
+    <x-admin-sidebar />
     <div id="page-payments" class="content">
         <div class="section-head mb-3">
             <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;">Payments</h2>

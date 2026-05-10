@@ -1,14 +1,8 @@
 <x-layout>
-
-    </head>
-
-    <body>
-
-        <!--  Sidebar -->
-        <x-admin-sidebar />
-
-        <x-admin-navbar />
-
+    <!--  Sidebar -->
+    <x-admin-sidebar />
+    <x-admin-navbar />
+    <div>
         {{-- dashboard --}}
         <div id="page-dashboard" class="content">
             <div class="row g-3 mb-4">
@@ -240,26 +234,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- <!-- MEMBERS-->
-        @include('member_control')
-        <!--ATTENDANCE-->
-        @include('attendence-control')
-
-        <!--PAYMENTS -->
-        @include('payments')
-
-        <!-- MEMBERSHIPS -->
-        @include('membership')
-
-        <!--REPORTS -->
-        @include('admin-reports')
-
-        <!-- SETTINGS -->
-        @include('admin-setting ')
-        </div><!-- /main --> --}}
-
-
-    </body>
+    </div>
 
 </x-layout>

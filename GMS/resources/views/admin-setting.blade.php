@@ -1,5 +1,7 @@
 <x-layout>
-    <div id="page-settings" class="content" style="display:none;">
+    <x-admin-navbar />
+    <x-admin-sidebar />
+    <div id="page-settings" class="content">
         <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;margin-bottom:24px;">
             Settings</h2>
         <div class="row g-4">

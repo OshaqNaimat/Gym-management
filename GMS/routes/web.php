@@ -27,9 +27,19 @@ Route::middleware(['auth'])->group(function () {
         })->name('admin.dash');
     });
 
+    // admin all routes
     Route::view('/member-control','member_control');
-    Route::view('/member-attendence','attendence-control');
+    Route::view('/member-attendence-control','attendence-control');
     Route::view('/admin-dashboard','admin-dashboard');
+    Route::view('/members-payments-control','payments');
+    Route::view('/membership','membership');
+    Route::view('/admin-reports','admin-reports');
+    Route::view('/admin-setting','admin-setting');
 
+    // member routes
+    Route::view('/member-dashboard','member-dashboard');
+    Route::view('/member-attendence','member-attendence');
+    Route::view('/member-payment','member-payment');
+    Route::view('/member-profile','member-profile');
 
 });

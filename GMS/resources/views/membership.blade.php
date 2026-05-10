@@ -1,5 +1,7 @@
 <x-layout>
-    <div id="page-memberships" class="content" style="display:none;">
+    <x-admin-navbar />
+    <x-admin-sidebar />
+    <div id="page-memberships" class="content">
         <div class="section-head mb-4">
             <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;">Membership
                 Plans</h2>
