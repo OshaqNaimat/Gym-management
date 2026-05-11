@@ -292,6 +292,23 @@
 
         // Initial render
         renderChart(monthlyData);
+        // Attendance Chart
+        const attendanceData = @json($weeklyAttendance);
+
+        function renderAttendanceChart(data) {
+            const chart = document.getElementById('attend-chart');
+            const max = Math.max(...data.map(d => d.count), 1);
+            chart.innerHTML = data.map(d => {
+                const pct = ((d.count / max) * 100).toFixed(1);
+                return `
+            <div class="bar-wrap" title="${d.count} members">
+                <div class="bar" style="height:${pct}%;background:#4fc3f7;"></div>
+                <div class="bar-label">${d.label}</div>
+            </div>`;
+            }).join('');
+        }
+
+        renderAttendanceChart(attendanceData);
     </script>
 
 </x-layout>

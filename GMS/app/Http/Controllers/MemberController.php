@@ -106,6 +106,14 @@ $newThisMonth = \App\Models\User::where('role', 'member')
     ->orderBy('date', 'desc')
     ->take(5)
     ->get();
+    $weeklyAttendance = [];
+for ($i = 6; $i >= 0; $i--) {
+    $date = now()->subDays($i);
+    $weeklyAttendance[] = [
+        'label' => $date->format('D'),
+        'count' => \App\Models\Attendance::whereDate('created_at', $date->toDateString())->count(),
+    ];
+}
 
 return view('admin-dashboard', compact(
     'memberCount',
@@ -120,7 +128,8 @@ return view('admin-dashboard', compact(
     'retentionRate',
     'newThisMonth',
     'recentMembers',
-    'recentPayments'
+    'recentPayments',
+    'weeklyAttendance'
 ));
 }
 
