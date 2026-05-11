@@ -98,12 +98,12 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mt-1">
-                                    <div class="form-check">
+                                    {{-- <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remember"
                                             id="remember" />
                                         <label class="form-check-label" for="remember">Remember me</label>
                                     </div>
-                                    <a href="#" class="form-link">Forgot password?</a>
+                                    <a href="#" class="form-link">Forgot password?</a> --}}
                                 </div>
 
                                 <!-- Remove the <a> tag. The button should submit the form. -->

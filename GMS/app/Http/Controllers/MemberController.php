@@ -7,11 +7,79 @@ use Illuminate\Support\Facades\Hash;
 
 class MemberController extends Controller
 {
-    public function dashboard()
-    {
-        $memberCount = User::where('role', 'member')->count();
-        return view('admin-dashboard', compact('memberCount'));
+ public function dashboard()
+{
+    $memberCount = User::where('role', 'member')->count();
+
+    $monthlyRevenue = \App\Models\Payment::where('status', 'Paid')
+        ->whereMonth('date', now()->month)
+        ->whereYear('date', now()->year)
+        ->sum('amount');
+
+    $lastMonthRevenue = \App\Models\Payment::where('status', 'Paid')
+        ->whereMonth('date', now()->subMonth()->month)
+        ->whereYear('date', now()->subMonth()->year)
+        ->sum('amount');
+
+    // Calculate percentage change
+    if ($lastMonthRevenue > 0) {
+        $revenueChange = (($monthlyRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100;
+    } elseif ($monthlyRevenue > 0) {
+        $revenueChange = 100; // anything vs zero = 100% increase
+    } else {
+        $revenueChange = 0;
     }
+
+   $expiredPlans = \App\Models\UserPlan::where('status', 'expired')->count();
+
+$expiredThisWeek = \App\Models\UserPlan::where('status', 'expired')
+    ->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()])
+    ->count();
+
+ $monthlyData = [];
+    for ($i = 5; $i >= 0; $i--) {
+        $date = now()->subMonths($i);
+        $monthlyData[] = [
+            'label' => $date->format('M'),
+            'amount' => \App\Models\Payment::where('status', 'Paid')
+                ->whereMonth('date', $date->month)
+                ->whereYear('date', $date->year)
+                ->sum('amount'),
+        ];
+    }
+
+    // Last 7 days for chart
+    $weeklyData = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $date = now()->subDays($i);
+        $weeklyData[] = [
+            'label' => $date->format('D'),
+            'amount' => \App\Models\Payment::where('status', 'Paid')
+                ->whereDate('date', $date->toDateString())
+                ->sum('amount'),
+        ];
+    }
+
+    // Growth %
+    if ($lastMonthRevenue > 0) {
+        $revenueChange = (($monthlyRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100;
+    } elseif ($monthlyRevenue > 0) {
+        $revenueChange = 100;
+    } else {
+        $revenueChange = 0;
+    }
+
+    return view('admin-dashboard', compact(
+        'memberCount',
+        'monthlyRevenue',
+        'lastMonthRevenue',
+        'revenueChange',
+        'monthlyData',
+        'weeklyData',
+        'expiredPlans',
+        'expiredThisWeek'
+    ));
+}
 
    public function index()
 {

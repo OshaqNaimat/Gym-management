@@ -18,16 +18,32 @@
                     <div class="stat-card c2">
                         <div class="stat-icon"><i class="fa fa-dollar-sign"></i></div>
                         <div class="stat-label">Monthly Revenue</div>
-                        <div class="stat-value">$1234</div>
-                        <div class="stat-sub"><span class="up">↑ 8.3%</span> vs last month</div>
+                        <div class="stat-value">${{ number_format($monthlyRevenue) }}</div>
+                        <div class="stat-sub">
+                            @if ($revenueChange > 0)
+                                <span class="up">↑ {{ number_format(abs($revenueChange), 1) }}%</span>
+                            @elseif($revenueChange < 0)
+                                <span class="down">↓ {{ number_format(abs($revenueChange), 1) }}%</span>
+                            @else
+                                <span class="neutral">→ 0%</span>
+                            @endif
+                            vs last month
+                        </div>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-4">
                     <div class="stat-card c3">
                         <div class="stat-icon"><i class="fa fa-calendar-xmark"></i></div>
                         <div class="stat-label">Expired Plans</div>
-                        <div class="stat-value">67</div>
-                        <div class="stat-sub"><span class="dn">↑ 4</span> this week</div>
+                        <div class="stat-value">{{ $expiredPlans }}</div>
+                        <div class="stat-sub">
+                            @if ($expiredThisWeek > 0)
+                                <span class="dn">↑ {{ $expiredThisWeek }}</span>
+                            @else
+                                <span class="neutral">→ 0</span>
+                            @endif
+                            this week
+                        </div>
                     </div>
                 </div>
             </div>
@@ -38,23 +54,28 @@
                         <div class="section-head">
                             <h2>Revenue Overview</h2>
                             <div class="tab-nav" style="margin:0;padding:3px;">
-                                <button class="tab-btn active" style="flex:none;padding:5px 12px;">Monthly</button>
-                                <button class="tab-btn" style="flex:none;padding:5px 12px;">Weekly</button>
+                                <button class="tab-btn active" style="flex:none;padding:5px 12px;"
+                                    onclick="switchChart('monthly', this)">Monthly</button>
+                                <button class="tab-btn text-white" style="flex:none;padding:5px 12px;"
+                                    onclick="switchChart('weekly', this)">Weekly</button>
                             </div>
                         </div>
                         <div class="chart-bars" id="revenue-chart"></div>
                         <div
                             style="display:flex;gap:16px;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
                             <div class="mini-metric">
-                                <div class="val" style="color:var(--accent);">$1234</div>
+                                <div class="val" style="color:var(--accent);">${{ number_format($monthlyRevenue) }}
+                                </div>
                                 <div class="lbl">This Month</div>
                             </div>
                             <div class="mini-metric">
-                                <div class="val">$44,611</div>
+                                <div class="val">${{ number_format($lastMonthRevenue) }}</div>
                                 <div class="lbl">Last Month</div>
                             </div>
                             <div class="mini-metric">
-                                <div class="val" style="color:#4ade80;">+8.3%</div>
+                                <div class="val" style="color: {{ $revenueChange >= 0 ? '#4ade80' : '#f87171' }};">
+                                    {{ $revenueChange >= 0 ? '+' : '' }}{{ number_format($revenueChange, 1) }}%
+                                </div>
                                 <div class="lbl">Growth</div>
                             </div>
                         </div>
@@ -257,5 +278,33 @@
             });
         </script>
     @endif
+
+
+    <script>
+        const monthlyData = @json($monthlyData);
+        const weeklyData = @json($weeklyData);
+
+        function renderChart(data) {
+            const chart = document.getElementById('revenue-chart');
+            const max = Math.max(...data.map(d => d.amount), 1);
+            chart.innerHTML = data.map(d => {
+                const pct = ((d.amount / max) * 100).toFixed(1);
+                return `
+                <div class="bar-wrap" title="$${Number(d.amount).toLocaleString()}">
+                    <div class="bar" style="height:${pct}%"></div>
+                    <div class="bar-label">${d.label}</div>
+                </div>`;
+            }).join('');
+        }
+
+        function switchChart(type, btn) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderChart(type === 'monthly' ? monthlyData : weeklyData);
+        }
+
+        // Initial render
+        renderChart(monthlyData);
+    </script>
 
 </x-layout>
