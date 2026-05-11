@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -32,11 +33,11 @@ class MemberController extends Controller
 
    $expiredPlans = \App\Models\UserPlan::where('status', 'expired')->count();
 
-$expiredThisWeek = \App\Models\UserPlan::where('status', 'expired')
+     $expiredThisWeek = \App\Models\UserPlan::where('status', 'expired')
     ->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()])
     ->count();
 
- $monthlyData = [];
+     $monthlyData = [];
     for ($i = 5; $i >= 0; $i--) {
         $date = now()->subMonths($i);
         $monthlyData[] = [
@@ -69,16 +70,48 @@ $expiredThisWeek = \App\Models\UserPlan::where('status', 'expired')
         $revenueChange = 0;
     }
 
-    return view('admin-dashboard', compact(
-        'memberCount',
-        'monthlyRevenue',
-        'lastMonthRevenue',
-        'revenueChange',
-        'monthlyData',
-        'weeklyData',
-        'expiredPlans',
-        'expiredThisWeek'
-    ));
+   // Plan distribution
+// Plan distribution from users table
+$planDistribution = \App\Models\User::where('role', 'member')
+    ->whereNotNull('plan')
+    ->select('plan', DB::raw('count(*) as total'))
+    ->groupBy('plan')
+    ->get();
+
+$totalPlans = $planDistribution->sum('total');
+
+$planStats = $planDistribution->map(function ($user) use ($totalPlans) {
+    return [
+        'name'       => $user->plan,
+        'count'      => $user->total,
+        'percentage' => $totalPlans > 0 ? round(($user->total / $totalPlans) * 100) : 0,
+    ];
+});
+
+// Retention rate (members who have a plan assigned)
+$totalMembers  = \App\Models\User::where('role', 'member')->count();
+$activeMembers = \App\Models\User::where('role', 'member')->whereNotNull('plan')->count();
+$retentionRate = $totalMembers > 0 ? round(($activeMembers / $totalMembers) * 100) : 0;
+
+// New members this month
+$newThisMonth = \App\Models\User::where('role', 'member')
+    ->whereMonth('created_at', now()->month)
+    ->whereYear('created_at', now()->year)
+    ->count();
+
+return view('admin-dashboard', compact(
+    'memberCount',
+    'monthlyRevenue',
+    'lastMonthRevenue',
+    'revenueChange',
+    'monthlyData',
+    'weeklyData',
+    'expiredPlans',
+    'expiredThisWeek',
+    'planStats',
+    'retentionRate',
+    'newThisMonth'
+));
 }
 
    public function index()

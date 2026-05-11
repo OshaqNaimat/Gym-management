@@ -86,42 +86,39 @@
                         <div class="section-head">
                             <h2>Plan Distribution</h2>
                         </div>
-                        <div class="prog-row">
-                            <div class="prog-label"><span>Annual</span><span>48%</span></div>
-                            <div class="prog-bar-bg">
-                                <div class="prog-bar-fill" style="width:48%;background:var(--accent);"></div>
+
+                        @php
+                            $colors = ['var(--accent)', '#4fc3f7', '#a78bfa', '#fbbf24', '#f87171', '#34d399'];
+                        @endphp
+
+                        @forelse($planStats as $index => $plan)
+                            <div class="prog-row">
+                                <div class="prog-label">
+                                    <span>{{ $plan['name'] }}</span>
+                                    <span>{{ $plan['percentage'] }}%</span>
+                                </div>
+                                <div class="prog-bar-bg">
+                                    <div class="prog-bar-fill"
+                                        style="width:{{ $plan['percentage'] }}%;background:{{ $colors[$index % count($colors)] }};">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="prog-row">
-                            <div class="prog-label"><span>Monthly</span><span>33%</span></div>
-                            <div class="prog-bar-bg">
-                                <div class="prog-bar-fill" style="width:33%;background:#4fc3f7;"></div>
-                            </div>
-                        </div>
-                        <div class="prog-row">
-                            <div class="prog-label"><span>Quarterly</span><span>14%</span></div>
-                            <div class="prog-bar-bg">
-                                <div class="prog-bar-fill" style="width:14%;background:#a78bfa;"></div>
-                            </div>
-                        </div>
-                        <div class="prog-row">
-                            <div class="prog-label"><span>Trial</span><span>5%</span></div>
-                            <div class="prog-bar-bg">
-                                <div class="prog-bar-fill" style="width:5%;background:#fbbf24;"></div>
-                            </div>
-                        </div>
+                        @empty
+                            <p style="color:var(--text-muted);font-size:13px;">No plan data available.</p>
+                        @endforelse
+
                         <div class="row g-2 mt-2">
                             <div class="col-6">
                                 <div class="mini-metric"
                                     style="background:var(--surface2);padding:10px;border-radius:8px;">
-                                    <div class="val">89%</div>
+                                    <div class="val">{{ $retentionRate }}%</div>
                                     <div class="lbl">Retention</div>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mini-metric"
                                     style="background:var(--surface2);padding:10px;border-radius:8px;">
-                                    <div class="val">142</div>
+                                    <div class="val">{{ $newThisMonth }}</div>
                                     <div class="lbl">New This Mo.</div>
                                 </div>
                             </div>
