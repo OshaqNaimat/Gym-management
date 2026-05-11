@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-4">
-                    <div class="stat-card c3">
+                    <div class="stat-card transition  c3">
                         <div class="stat-icon"><i class="fa fa-calendar-xmark"></i></div>
                         <div class="stat-label">Expired Plans</div>
                         <div class="stat-value">{{ $expiredPlans }}</div>
@@ -130,8 +130,8 @@
             <div class="row g-3 mb-4">
                 <div class="col-lg-12">
                     <div class="section-head">
-                        <h2>Recent Members</h2><button class="btn-accent" onclick="showPage('members')">View
-                            All</button>
+                        <h2>Recent Members</h2>
+                        <a href="/member-control" class="btn-accent text-decoration-none">View All</a>
                     </div>
                     <div class="table-card">
                         <table>
@@ -144,56 +144,57 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <div style="display:flex;align-items:center;">
-                                            <div class="mem-avatar" style="background:#e8ff47;">AK</div>Alex Kim
-                                        </div>
-                                    </td>
-                                    <td>Annual</td>
-                                    <td>Feb 18</td>
-                                    <td><span class="badge-status badge-active">Active</span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="display:flex;align-items:center;">
-                                            <div class="mem-avatar" style="background:#4fc3f7;">SR</div>Sara Reed
-                                        </div>
-                                    </td>
-                                    <td>Monthly</td>
-                                    <td>Feb 16</td>
-                                    <td><span class="badge-status badge-active">Active</span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="display:flex;align-items:center;">
-                                            <div class="mem-avatar" style="background:#a78bfa;">MO</div>Mike Osei
-                                        </div>
-                                    </td>
-                                    <td>Trial</td>
-                                    <td>Feb 15</td>
-                                    <td><span class="badge-status badge-trial">Trial</span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="display:flex;align-items:center;">
-                                            <div class="mem-avatar" style="background:#fb923c;">JP</div>Jane Park
-                                        </div>
-                                    </td>
-                                    <td>Quarterly</td>
-                                    <td>Feb 10</td>
-                                    <td><span class="badge-status badge-expired">Expired</span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div style="display:flex;align-items:center;">
-                                            <div class="mem-avatar" style="background:#4ade80;">LC</div>Leo Chen
-                                        </div>
-                                    </td>
-                                    <td>Annual</td>
-                                    <td>Feb 08</td>
-                                    <td><span class="badge-status badge-active">Active</span></td>
-                                </tr>
+                                @forelse($recentMembers as $member)
+                                    @php
+                                        // Generate initials from name
+                                        $words = explode(' ', trim($member->name));
+                                        $initials = strtoupper(
+                                            substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''),
+                                        );
+
+                                        // Avatar colors
+                                        $colors = [
+                                            '#e8ff47',
+                                            '#4fc3f7',
+                                            '#a78bfa',
+                                            '#fb923c',
+                                            '#4ade80',
+                                            '#f87171',
+                                            '#34d399',
+                                        ];
+                                        $color = $colors[$member->id % count($colors)];
+
+                                        // Status based on plan
+                                        if (is_null($member->plan)) {
+                                            $status = 'No Plan';
+                                            $badgeClass = 'badge-expired';
+                                        } elseif ($member->plan === 'Trial') {
+                                            $status = 'Trial';
+                                            $badgeClass = 'badge-trial';
+                                        } else {
+                                            $status = 'Active';
+                                            $badgeClass = 'badge-active';
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <div style="display:flex;align-items:center;gap:8px;">
+                                                <div class="mem-avatar" style="background:{{ $color }};">
+                                                    {{ $initials }}</div>
+                                                {{ $member->name }}
+                                            </div>
+                                        </td>
+                                        <td>{{ $member->plan ?? '—' }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($member->created_at)->format('M d') }}</td>
+                                        <td><span class="badge-status {{ $badgeClass }}">{{ $status }}</span>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" style="text-align:center;color:var(--text-muted);">No members
+                                            found.</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

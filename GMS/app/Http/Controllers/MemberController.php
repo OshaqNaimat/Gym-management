@@ -98,6 +98,10 @@ $newThisMonth = \App\Models\User::where('role', 'member')
     ->whereMonth('created_at', now()->month)
     ->whereYear('created_at', now()->year)
     ->count();
+    $recentMembers = \App\Models\User::where('role', 'member')
+    ->orderBy('created_at', 'desc')
+    ->take(5)
+    ->get();
 
 return view('admin-dashboard', compact(
     'memberCount',
@@ -110,7 +114,8 @@ return view('admin-dashboard', compact(
     'expiredThisWeek',
     'planStats',
     'retentionRate',
-    'newThisMonth'
+    'newThisMonth',
+    'recentMembers'
 ));
 }
 
