@@ -204,43 +204,32 @@
             <div class="row g-3">
                 <div class="col-lg-5">
                     <div class="section-head">
-                        <h2>Recent Payments</h2><button class="btn-outline-accent" onclick="showPage('payments')">View
-                            All</button>
+                        <h2>Recent Payments</h2><a href="/members-payments-control"
+                            class="btn-outline-accent text-decoration-none">View
+                            All</a>
                     </div>
                     <div class="chart-card">
-                        <div class="payment-row">
-                            <div class="pay-icon"><i class="fa fa-check"></i></div>
-                            <div>
-                                <div class="pay-name">Alex Kim</div>
-                                <div class="pay-plan">Annual Plan</div>
+                        @forelse($recentPayments as $payment)
+                            @php
+                                $isPaid = $payment->status === 'Paid';
+                            @endphp
+                            <div class="payment-row">
+                                <div class="pay-icon"
+                                    style="{{ !$isPaid ? 'background:rgba(255,71,87,.1);color:var(--accent2);' : '' }}">
+                                    <i class="fa fa-{{ $isPaid ? 'check' : 'xmark' }}"></i>
+                                </div>
+                                <div>
+                                    <div class="pay-name">{{ $payment->user->name ?? '—' }}</div>
+                                    <div class="pay-plan">{{ $payment->plan ?? ($payment->user->plan ?? '—') }} Plan
+                                    </div>
+                                </div>
+                                <div class="pay-amount" style="{{ !$isPaid ? 'color:var(--accent2);' : '' }}">
+                                    ${{ number_format($payment->amount) }}
+                                </div>
                             </div>
-                            <div class="pay-amount">$599</div>
-                        </div>
-                        <div class="payment-row">
-                            <div class="pay-icon"><i class="fa fa-check"></i></div>
-                            <div>
-                                <div class="pay-name">Sara Reed</div>
-                                <div class="pay-plan">Monthly Plan</div>
-                            </div>
-                            <div class="pay-amount">$59</div>
-                        </div>
-                        <div class="payment-row">
-                            <div class="pay-icon" style="background:rgba(255,71,87,.1);color:var(--accent2);"><i
-                                    class="fa fa-xmark"></i></div>
-                            <div>
-                                <div class="pay-name">Jane Park</div>
-                                <div class="pay-plan">Quarterly Plan</div>
-                            </div>
-                            <div class="pay-amount" style="color:var(--accent2);">$149</div>
-                        </div>
-                        <div class="payment-row">
-                            <div class="pay-icon"><i class="fa fa-check"></i></div>
-                            <div>
-                                <div class="pay-name">Leo Chen</div>
-                                <div class="pay-plan">Annual Plan</div>
-                            </div>
-                            <div class="pay-amount">$599</div>
-                        </div>
+                        @empty
+                            <p style="color:var(--text-muted);font-size:13px;text-align:center;">No payments found.</p>
+                        @endforelse
                     </div>
                 </div>
                 <div class="col-lg-7">

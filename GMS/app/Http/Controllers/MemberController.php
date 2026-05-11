@@ -102,6 +102,10 @@ $newThisMonth = \App\Models\User::where('role', 'member')
     ->orderBy('created_at', 'desc')
     ->take(5)
     ->get();
+    $recentPayments = \App\Models\Payment::with('user')
+    ->orderBy('date', 'desc')
+    ->take(5)
+    ->get();
 
 return view('admin-dashboard', compact(
     'memberCount',
@@ -115,7 +119,8 @@ return view('admin-dashboard', compact(
     'planStats',
     'retentionRate',
     'newThisMonth',
-    'recentMembers'
+    'recentMembers',
+    'recentPayments'
 ));
 }
 
@@ -187,6 +192,7 @@ return view('admin-dashboard', compact(
             'plan'        => $request->plan,
             'amount'      => $request->amount,
             'gender'      => $request->gender,
+            'plan_updated_at' => now(),
             ...($request->filled('password') ? ['password' => Hash::make($request->password)] : []),
         ]);
 

@@ -51,14 +51,16 @@
                 <tbody id="membersTable">
                     @foreach ($members as $member)
                         @php
+                            $planStart = $member->plan_updated_at ?? $member->created_at;
                             $expiry = match ($member->plan) {
-                                'Trial' => $member->created_at->copy()->addDay(),
-                                'Monthly' => $member->created_at->copy()->addMonth(),
-                                'Quarterly' => $member->created_at->copy()->addMonths(3),
-                                'Annual' => $member->created_at->copy()->addYear(),
+                                'Trial' => $planStart->copy()->addDay(),
+                                'Monthly' => $planStart->copy()->addMonth(),
+                                'Quarterly' => $planStart->copy()->addMonths(3),
+                                'Annual' => $planStart->copy()->addYear(),
                                 default => null,
                             };
                             $isExpired = $expiry && $expiry->isPast();
+
                             $colors = [
                                 '#e8ff47',
                                 '#4fc3f7',
