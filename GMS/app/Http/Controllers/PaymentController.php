@@ -34,6 +34,13 @@ class PaymentController extends Controller
 
         Payment::create($request->all());
 
+        if ($request->status === 'Paid') {
+    $user = \App\Models\User::findOrFail($request->user_id);
+    $user->update([
+        'plan'            => $request->plan,
+        'plan_updated_at' => now(),
+    ]);
+}
         return back()->with('success', 'Payment recorded successfully!');
     }
 

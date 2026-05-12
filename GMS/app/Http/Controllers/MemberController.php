@@ -31,23 +31,35 @@ class MemberController extends Controller
         $revenueChange = 0;
     }
 
-   $expiredPlans = \App\Models\UserPlan::where('status', 'expired')->count();
+  $now = now();
 
-     $expiredThisWeek = \App\Models\UserPlan::where('status', 'expired')
-    ->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()])
-    ->count();
+$expiredPlans = \App\Models\User::where('role', 'member')
+    ->where(function ($q) use ($now) {
+        $q->where(fn($q) => $q->where('plan','Trial')->where('plan_updated_at','<',$now->copy()->subDay()))
+          ->orWhere(fn($q) => $q->where('plan','Monthly')->where('plan_updated_at','<',$now->copy()->subMonth()))
+          ->orWhere(fn($q) => $q->where('plan','Quarterly')->where('plan_updated_at','<',$now->copy()->subMonths(3)))
+          ->orWhere(fn($q) => $q->where('plan','Annual')->where('plan_updated_at','<',$now->copy()->subYear()));
+    })->count();
 
-     $monthlyData = [];
-    for ($i = 5; $i >= 0; $i--) {
-        $date = now()->subMonths($i);
-        $monthlyData[] = [
-            'label' => $date->format('M'),
-            'amount' => \App\Models\Payment::where('status', 'Paid')
-                ->whereMonth('date', $date->month)
-                ->whereYear('date', $date->year)
-                ->sum('amount'),
-        ];
-    }
+$expiredThisWeek = \App\Models\User::where('role', 'member')
+    ->where(function ($q) use ($now) {
+        $q->where(fn($q) => $q->where('plan','Trial')->whereBetween('plan_updated_at',[$now->copy()->startOfWeek()->subDay(),$now->copy()->endOfWeek()->subDay()]))
+          ->orWhere(fn($q) => $q->where('plan','Monthly')->whereBetween('plan_updated_at',[$now->copy()->startOfWeek()->subMonth(),$now->copy()->endOfWeek()->subMonth()]))
+          ->orWhere(fn($q) => $q->where('plan','Quarterly')->whereBetween('plan_updated_at',[$now->copy()->startOfWeek()->subMonths(3),$now->copy()->endOfWeek()->subMonths(3)]))
+          ->orWhere(fn($q) => $q->where('plan','Annual')->whereBetween('plan_updated_at',[$now->copy()->startOfWeek()->subYear(),$now->copy()->endOfWeek()->subYear()]));
+    })->count();
+
+    $monthlyData = [];
+for ($i = 5; $i >= 0; $i--) {
+    $date = now()->subMonths($i);
+    $monthlyData[] = [
+        'label' => $date->format('M'),
+        'amount' => \App\Models\Payment::where('status', 'Paid')
+            ->whereMonth('date', $date->month)
+            ->whereYear('date', $date->year)
+            ->sum('amount'),
+    ];
+}
 
     // Last 7 days for chart
     $weeklyData = [];
@@ -175,6 +187,7 @@ return view('admin-dashboard', compact(
             'plan'        => $request->plan,
             'amount'      => $request->amount,
             'gender'      => $request->gender,
+            'plan_updated_at' => now(),
         ]);
 
         return back()->with('success', 'Member added successfully!');
