@@ -46,7 +46,10 @@
         </div>
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="btn-logout" class="nav-item"><i class="fa fa-logout"></i>Logout</button>
+            <button type="submit" class="btn-logout " class="nav-item"
+                style="width:100%;background:none;border:none;cursor:pointer;text-align:left;color:var(--accent2);"><i
+                    class="fa fa-right-from-bracket"></i>
+                Logout</button>
         </form>
     </div>
 </x-layout>
