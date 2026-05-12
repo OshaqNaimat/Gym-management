@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -41,6 +42,13 @@ class PaymentController extends Controller
         'plan_updated_at' => now(),
     ]);
 }
+ Notification::create([
+            'type'    => 'payment_' . strtolower($request->status),
+            'title'   => 'Payment ' . $request->status,
+            'message' => $user->name . ' made a ' . $request->method . ' payment of Rs. ' . $request->amount . ' (' . $request->plan . ' plan) — ' . $request->status . '.',
+            'is_read' => false,
+        ]);
+
         return back()->with('success', 'Payment recorded successfully!');
     }
 
