@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -48,8 +49,7 @@ $expiredThisWeek = \App\Models\User::where('role', 'member')
           ->orWhere(fn($q) => $q->where('plan','Quarterly')->whereBetween('plan_updated_at',[$now->copy()->startOfWeek()->subMonths(3),$now->copy()->endOfWeek()->subMonths(3)]))
           ->orWhere(fn($q) => $q->where('plan','Annual')->whereBetween('plan_updated_at',[$now->copy()->startOfWeek()->subYear(),$now->copy()->endOfWeek()->subYear()]));
     })->count();
-
-    $monthlyData = [];
+$monthlyData = [];
 for ($i = 5; $i >= 0; $i--) {
     $date = now()->subMonths($i);
     $monthlyData[] = [
@@ -177,19 +177,23 @@ return view('admin-dashboard', compact(
             'gender'      => 'nullable|in:Male,Female,Other',
         ]);
 
-        User::create([
-            'name'        => $request->name,
-            'email'       => $request->email,
-            'password'    => Hash::make($request->password),
-            'role'        => 'member',
-            'roll_number' => $request->roll_number,
-            'phone'       => $request->phone,
-            'plan'        => $request->plan,
-            'amount'      => $request->amount,
-            'gender'      => $request->gender,
-            'plan_updated_at' => now(),
-        ]);
-
+      $user = User::create([
+    'name'        => $request->name,
+    'email'       => $request->email,
+    'password'    => Hash::make($request->password),
+    'role'        => 'member',
+    'roll_number' => $request->roll_number,
+    'phone'       => $request->phone,
+    'plan'        => $request->plan,
+    'amount'      => $request->amount,
+    'gender'      => $request->gender,
+]);
+          Notification::create([          // ← now $user is defined
+        'type'    => 'member_added',
+        'title'   => 'New Member Added',
+        'message' => $user->name . ' has been added with a ' . $user->plan . ' plan.',
+        'is_read' => false,
+    ]);
         return back()->with('success', 'Member added successfully!');
     }
 
