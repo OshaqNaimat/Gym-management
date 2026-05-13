@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingController;
 
 // Public Routes
@@ -38,11 +39,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/add-member', [MemberController::class, 'store'])->name('admin.addMember');
     Route::get('/member-attendence-control', [AttendanceController::class, 'index'])->name('admin.attendanceControl');
     Route::post('/admin/save-attendance', [AttendanceController::class, 'save'])->name('admin.saveAttendance');
-      Route::get('/members-payments-control', [PaymentController::class, 'index'])->name('admin.paymentsControl');
+    Route::get('/members-payments-control', [PaymentController::class, 'index'])->name('admin.paymentsControl');
     Route::post('/admin/add-payment', [PaymentController::class, 'store'])->name('admin.addPayment');
     Route::get('/admin/export-payments', [PaymentController::class, 'export'])->name('admin.exportPayments');
-     Route::get('/admin-setting', [SettingController::class, 'index'])->name('admin.setting');
+    Route::get('/admin-setting', [SettingController::class, 'index'])->name('admin.setting');
     Route::post('/admin/update-gym', [SettingController::class, 'updateGym'])->name('admin.updateGym');
     Route::post('/admin/update-hours', [SettingController::class, 'updateHours'])->name('admin.updateHours');
     Route::post('/admin/update-password', [SettingController::class, 'updatePassword'])->name('admin.updatePassword');
+    Route::get('/search', [SearchController::class, 'index'])->name('search');
 });

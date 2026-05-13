@@ -3345,3 +3345,68 @@ tbody tr:hover {
     border-radius: 50%;
     border: 1px solid var(--surface2);
 }
+.topbar-search {
+    position: relative;
+}
+
+.search-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    min-width: 320px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 999;
+    overflow: hidden;
+}
+
+.search-dropdown.show {
+    display: block;
+}
+
+.search-section-title {
+    padding: 8px 14px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.search-item {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+.search-item:hover {
+    background: var(--surface);
+}
+
+.search-item strong {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text);
+}
+
+.search-item span {
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+.search-empty {
+    padding: 16px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
