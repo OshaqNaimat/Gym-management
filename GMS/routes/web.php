@@ -35,7 +35,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/edit-member/{user}', [MemberController::class, 'update'])->name('admin.updateMember');
     Route::get('/member-attendence-control',  fn() => view('attendence-control'))->name('admin.attendanceControl');
     Route::get('/members-payments-control',   fn() => view('payments'))->name('admin.paymentsControl');
-    // Route::get('/membership',                 fn() => view('membership'))->name('admin.membership');
     Route::post('/admin/add-member', [MemberController::class, 'store'])->name('admin.addMember');
     Route::get('/member-attendence-control', [AttendanceController::class, 'index'])->name('admin.attendanceControl');
     Route::post('/admin/save-attendance', [AttendanceController::class, 'save'])->name('admin.saveAttendance');
