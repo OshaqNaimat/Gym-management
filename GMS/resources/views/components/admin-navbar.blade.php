@@ -5,7 +5,7 @@
                 <i class="fa fa-bars"></i>
             </button>
             <div class="topbar-title" id="page-title">Dashboard</div>
-            <div class="topbar-search" style="position: relative;">
+            <div class="topbar-search" style="position: relative; flex: 1; max-width: 520px; margin: 0 auto;">
                 <i class="fa fa-magnifying-glass"></i>
                 <input type="text" id="globalSearch" placeholder="Search members, payments...">
 

@@ -296,6 +296,7 @@ body.light-mode .nav-item.active {
 .topbar-search {
     position: relative;
 }
+
 .topbar-search input {
     background: var(--surface2);
     border: 1px solid var(--border);
@@ -303,7 +304,8 @@ body.light-mode .nav-item.active {
     padding: 8px 16px 8px 38px;
     border-radius: 8px;
     font-size: 0.85rem;
-    width: 220px;
+    width: 100%; /* was 220px — now fills the container */
+    box-sizing: border-box; /* prevents overflow from padding */
     outline: none;
     transition: border-color 0.2s;
     font-family: "DM Sans", sans-serif;
@@ -2473,19 +2475,16 @@ body {
 
 .topbar-title {
     font-family: "Bebas Neue", sans-serif;
-    font-size: 20px;
+    font-size: 1.5rem;
     letter-spacing: 1px;
-    flex: 1;
+    white-space: nowrap;
 }
 
 .topbar-search {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 12px;
+    position: relative;
+    flex: 1;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .topbar-search input {
@@ -2494,7 +2493,7 @@ body {
     outline: none;
     font-size: 13px;
     color: var(--text);
-    width: 180px;
+    width: 100%;
 }
 
 .topbar-search input::placeholder {

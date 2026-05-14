@@ -180,13 +180,6 @@
 
             <!-- Schedule + Recent Payments -->
             <div class="row g-3">
-                {{-- <div class="col-lg-7">
-                    <div class="section-head">
-                        <h2>This Week's Schedule</h2><button class="btn-outline-accent"
-                            onclick="showPage('schedule')">Full Schedule</button>
-                    </div>
-                    <div class="chart-card" id="dash-schedule"></div>
-                </div> --}}
                 <div class="col-lg-12">
                     <div class="section-head">
                         <h2>Recent Payments</h2><button class="btn-outline-accent" onclick="showPage('payments')">View
