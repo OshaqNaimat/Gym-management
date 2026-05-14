@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -224,4 +225,119 @@ return view('admin-dashboard', compact(
 
         return back()->with('success', 'Member updated successfully!');
     }
+    public function memberDashboard()
+{
+    $user = auth()->user();
+    $now  = now();
+
+    // ── Expiry ──────────────────────────────────────────────
+    $expiry = match ($user->plan) {
+        'Trial'     => $user->plan_updated_at?->copy()->addDay(),
+        'Monthly'   => $user->plan_updated_at?->copy()->addMonth(),
+        'Quarterly' => $user->plan_updated_at?->copy()->addMonths(3),
+        'Annual'    => $user->plan_updated_at?->copy()->addYear(),
+        default     => null,
+    };
+    $daysLeft = $expiry ? max(0, (int) $now->diffInDays($expiry, false)) : null;
+
+    // ── Check-ins this month ─────────────────────────────────
+    $checkInsThisMonth = Attendance::where('user_id', $user->id)
+        ->where('status', 'present')
+        ->whereMonth('date', $now->month)
+        ->whereYear('date', $now->year)
+        ->count();
+
+    // ── Attendance rate (this month vs working days so far) ──
+    $workingDaysSoFar = 0;
+    $presentDays      = 0;
+    $startOfMonth     = $now->copy()->startOfMonth();
+    for ($d = $startOfMonth->copy(); $d->lte($now); $d->addDay()) {
+        if ($d->isWeekday()) {
+            $workingDaysSoFar++;
+            $attended = Attendance::where('user_id', $user->id)
+                ->where('date', $d->toDateString())
+                ->where('status', 'present')
+                ->exists();
+            if ($attended) $presentDays++;
+        }
+    }
+    $attendanceRate = $workingDaysSoFar > 0
+        ? round(($presentDays / $workingDaysSoFar) * 100)
+        : 0;
+
+    // ── Last month attendance rate (for comparison) ──────────
+    $lastMonth            = $now->copy()->subMonth();
+    $lastMonthWorkingDays = 0;
+    $lastMonthPresent     = 0;
+    for ($d = $lastMonth->copy()->startOfMonth(); $d->lte($lastMonth->copy()->endOfMonth()); $d->addDay()) {
+        if ($d->isWeekday()) {
+            $lastMonthWorkingDays++;
+            $attended = Attendance::where('user_id', $user->id)
+                ->where('date', $d->toDateString())
+                ->where('status', 'present')
+                ->exists();
+            if ($attended) $lastMonthPresent++;
+        }
+    }
+    $lastMonthRate      = $lastMonthWorkingDays > 0
+        ? round(($lastMonthPresent / $lastMonthWorkingDays) * 100)
+        : 0;
+    $attendanceRateDiff = $attendanceRate - $lastMonthRate;
+
+    // ── Last 6 months attendance chart ───────────────────────
+    $monthlyAttendance = [];
+    for ($i = 5; $i >= 0; $i--) {
+        $d = $now->copy()->subMonths($i);
+        $monthlyAttendance[] = [
+            'label' => $d->format('M'),
+            'count' => Attendance::where('user_id', $user->id)
+                ->where('status', 'present')
+                ->whereMonth('date', $d->month)
+                ->whereYear('date', $d->year)
+                ->count(),
+        ];
+    }
+
+    // ── Last month check-ins (for growth %) ──────────────────
+    $checkInsLastMonth = Attendance::where('user_id', $user->id)
+        ->where('status', 'present')
+        ->whereMonth('date', $lastMonth->month)
+        ->whereYear('date', $lastMonth->year)
+        ->count();
+    $checkInGrowth = $checkInsLastMonth > 0
+        ? round((($checkInsThisMonth - $checkInsLastMonth) / $checkInsLastMonth) * 100)
+        : ($checkInsThisMonth > 0 ? 100 : 0);
+
+    // ── Goal: 25 check-ins per month (adjust as needed) ──────
+    $checkInGoal    = 25;
+    $goalPercentage = min(100, round(($checkInsThisMonth / $checkInGoal) * 100));
+
+    // ── Next payment ─────────────────────────────────────────
+    $nextPayment = \App\Models\Payment::where('user_id', $user->id)
+        ->where('status', 'Pending')
+        ->orderBy('date')
+        ->first();
+
+    // ── Recent payments ───────────────────────────────────────
+    $recentPayments = \App\Models\Payment::where('user_id', $user->id)
+        ->orderBy('date', 'desc')
+        ->take(5)
+        ->get();
+
+    return view('member-dashboard', compact(
+        'user',
+        'expiry',
+        'daysLeft',
+        'checkInsThisMonth',
+        'attendanceRate',
+        'attendanceRateDiff',
+        'monthlyAttendance',
+        'checkInsLastMonth',
+        'checkInGrowth',
+        'checkInGoal',
+        'goalPercentage',
+        'nextPayment',
+        'recentPayments',
+    ));
+}
 }

@@ -46,4 +46,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/update-hours', [SettingController::class, 'updateHours'])->name('admin.updateHours');
     Route::post('/admin/update-password', [SettingController::class, 'updatePassword'])->name('admin.updatePassword');
     Route::get('/search', [SearchController::class, 'index'])->name('search');
+    Route::get('/member/dashboard', [MemberController::class, 'memberDashboard'])
+    ->middleware('auth')
+    ->name('member.dashboard');
 });
