@@ -79,7 +79,7 @@
                                         : ''),
                             );
                         @endphp
-                        <tr data-plan="{{ $member->plan }}">
+                        <tr id="member-{{ $member->id }}" data-plan="{{ $member->plan }}">
                             <td>
                                 <div style="display:flex;align-items:center;">
                                     <div class="mem-avatar" style="background:{{ $color }};">{{ $initials }}
@@ -335,6 +335,23 @@
                 confirmInput.classList.remove('is-invalid');
                 errorEl.style.display = 'none';
             }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const memberId = sessionStorage.getItem('highlightMember');
+            if (!memberId) return;
+
+            sessionStorage.removeItem('highlightMember'); // clear immediately so refresh doesn't re-blink
+
+            const memberEl = document.getElementById('member-' + memberId);
+            if (!memberEl) return;
+
+            memberEl.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+            memberEl.classList.add('search-highlight-blink');
+
+            setTimeout(() => memberEl.classList.remove('search-highlight-blink'), 3000);
         });
     </script>
 

@@ -3409,3 +3409,35 @@ tbody tr:hover {
     color: var(--muted);
     font-size: 0.85rem;
 }
+
+.search-item:hover {
+    background: var(--surface2);
+    cursor: pointer;
+}
+@keyframes searchBlink {
+    0% {
+        box-shadow: 0 0 0 3px #f0c000;
+        background-color: #fff8c5;
+    }
+    25% {
+        box-shadow: 0 0 0 6px #f0c000;
+        background-color: #ffe066;
+    }
+    50% {
+        box-shadow: 0 0 0 3px #f0c000;
+        background-color: #fff8c5;
+    }
+    75% {
+        box-shadow: 0 0 0 6px #f0c000;
+        background-color: #ffe066;
+    }
+    100% {
+        box-shadow: none;
+        background-color: transparent;
+    }
+}
+
+.search-highlight-blink {
+    animation: searchBlink 2.5s ease-in-out forwards;
+    border-radius: 12px;
+}

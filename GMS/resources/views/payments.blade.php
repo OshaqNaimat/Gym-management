@@ -80,7 +80,7 @@
                                 substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''),
                             );
                         @endphp
-                        <tr>
+                        <tr id="payment-{{ $payment->id }}">
                             <td>
                                 <div style="display:flex;align-items:center;">
                                     <div class="mem-avatar" style="background:{{ $color }};">{{ $initials }}
@@ -186,4 +186,23 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const paymentId = sessionStorage.getItem('highlightPayment');
+            if (!paymentId) return;
+
+            sessionStorage.removeItem('highlightPayment');
+
+            const paymentEl = document.getElementById('payment-' + paymentId);
+            if (!paymentEl) return;
+
+            paymentEl.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+            paymentEl.classList.add('search-highlight-blink');
+
+            setTimeout(() => paymentEl.classList.remove('search-highlight-blink'), 3000);
+        });
+    </script>
 </x-layout>

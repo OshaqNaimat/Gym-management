@@ -7,7 +7,7 @@
         <div id="page-dashboard" class="content">
 
             <!-- Hero Member Card -->
-            <div class="hero-card mb-4">
+            <div class="hero-card mb-4" id="member-{{ $user->id }}">
                 <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap;">
                     @php
                         $parts = explode(' ', $user->name);

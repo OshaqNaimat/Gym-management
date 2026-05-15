@@ -23,7 +23,7 @@
                         <div class="badge-dot"></div>
                     @endif
 
-                    <div class="notification-dropdown">
+                    <div class="notification-dropdown" style="max-height:320px;overflow-y:auto;">
                         @forelse(isset($notifications) ? $notifications : [] as $notification)
                             <div class="notification-item {{ $notification->is_read ? '' : 'unread' }}">
                                 <strong>{{ $notification->title }}</strong>
@@ -54,6 +54,16 @@
                 bellBtn.classList.remove('active');
             });
 
+            function highlightMember(id) {
+                sessionStorage.setItem('highlightMember', id);
+                window.location.href = '/member-control';
+            }
+
+            function highlightPayment(id) {
+                sessionStorage.setItem('highlightPayment', id);
+                window.location.href = '/members-payments-control';
+            }
+
             const searchInput = document.getElementById('globalSearch');
             const searchDropdown = document.getElementById('searchDropdown');
             const searchResults = document.getElementById('searchResults');
@@ -78,10 +88,11 @@
                                 html += `<div class="search-section-title">Members</div>`;
                                 data.members.forEach(m => {
                                     html += `
-                                <div class="search-item">
-                                    <strong>${m.name}</strong>
-                                    <span>${m.email} • ${m.phone ?? 'No phone'} • ${m.plan ?? 'No plan'}</span>
-                                </div>`;
+    <div class="search-item" onclick="highlightMember(${m.id})"
+        style="cursor:pointer;">
+        <strong>${m.name}</strong>
+        <span>${m.email} • ${m.phone ?? 'No phone'} • ${m.plan ?? 'No plan'}</span>
+    </div>`;
                                 });
                             }
 
@@ -89,10 +100,11 @@
                                 html += `<div class="search-section-title">Payments</div>`;
                                 data.payments.forEach(p => {
                                     html += `
-                                <div class="search-item">
-                                    <strong>${p.user?.name ?? 'Unknown'} — Rs. ${p.amount}</strong>
-                                    <span>${p.plan} • ${p.method} • ${p.status} • ${p.date}</span>
-                                </div>`;
+    <div class="search-item" onclick="highlightPayment(${p.id})"
+        style="cursor:pointer;">
+        <strong>${p.user?.name ?? 'Unknown'} — Rs. ${p.amount}</strong>
+        <span>${p.plan} • ${p.method} • ${p.status} • ${p.date}</span>
+    </div>`;
                                 });
                             }
 
@@ -112,6 +124,21 @@
                 if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
                     searchDropdown.classList.remove('show');
                 }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                const hash = window.location.hash;
+                if (!hash.startsWith('#member-')) return;
+
+                const memberEl = document.querySelector(hash);
+                if (!memberEl) return;
+
+                memberEl.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+                memberEl.classList.add('search-highlight-blink');
+
+                setTimeout(() => memberEl.classList.remove('search-highlight-blink'), 3000);
             });
         </script>
 
