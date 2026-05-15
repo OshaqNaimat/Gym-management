@@ -61,7 +61,7 @@
                     <div class="stat-card c1">
                         <div class="stat-icon"><i class="fa fa-fire"></i></div>
                         <div class="stat-label">This Month</div>
-                        <div class="stat-value">22</div>
+                        <div class="stat-value">{{ $checkInsThisMonth }}</div>
                         <div class="stat-sub">Check-ins so far</div>
                     </div>
                 </div>
@@ -69,24 +69,31 @@
                     <div class="stat-card c4">
                         <div class="stat-icon"><i class="fa fa-circle-check"></i></div>
                         <div class="stat-label">Attendance Rate</div>
-                        <div class="stat-value">88%</div>
-                        <div class="stat-sub"><span style="color:#4ade80;">↑ 5%</span> vs last month</div>
+                        <div class="stat-value">{{ $attendanceRate }}%</div>
+                        <div class="stat-sub">
+                            <span style="color: {{ $attendanceRateDiff >= 0 ? '#4ade80' : '#f87171' }}">
+                                {{ $attendanceRateDiff >= 0 ? '↑' : '↓' }} {{ abs($attendanceRateDiff) }}%
+                            </span> vs last month
+                        </div>
                     </div>
                 </div>
                 <div class="col-6 col-xl-3">
                     <div class="stat-card c2">
                         <div class="stat-icon"><i class="fa fa-calendar-days"></i></div>
                         <div class="stat-label">Days Left</div>
-                        <div class="stat-value">361</div>
-                        <div class="stat-sub">Annual plan active</div>
+                        <div class="stat-value">{{ $daysLeft ?? 'N/A' }}</div>
+                        <div class="stat-sub">{{ $user->plan ?? 'No' }} plan active</div>
                     </div>
                 </div>
                 <div class="col-6 col-xl-3">
                     <div class="stat-card c3">
                         <div class="stat-icon"><i class="fa fa-dollar-sign"></i></div>
                         <div class="stat-label">Next Payment</div>
-                        <div class="stat-value">$599</div>
-                        <div class="stat-sub">Due Feb 18, 2027</div>
+                        <div class="stat-value">${{ $nextPayment?->amount ?? '—' }}</div>
+                        <div class="stat-sub">
+                            Due
+                            {{ $nextPayment ? \Carbon\Carbon::parse($nextPayment->date)->format('M d, Y') : 'N/A' }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -216,5 +223,11 @@
             </div>
         </div>
     </div>
+    <script>
+        const monthlyAttendance = @json($monthlyAttendance);
+        const checkInsThisMonth = {{ $checkInsThisMonth }};
+        const checkInsLastMonth = {{ $checkInsLastMonth }};
+        const checkInGrowth = {{ $checkInGrowth }};
+    </script>
 
 </x-layout>

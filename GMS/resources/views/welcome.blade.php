@@ -90,10 +90,26 @@
 
                                 <div class="form-group">
                                     <label class="form-label">Password</label>
-                                    <div class="input-icon-wrap">
+                                    <div class="input-icon-wrap"
+                                        style="position: relative; display: flex; align-items: center;">
                                         <span class="icon">🔒</span>
-                                        <input type="password" name="password" class="form-control"
+                                        <input type="password" name="password" id="passwordInput" class="form-control"
                                             placeholder="••••••••" required />
+                                        <button type="button"
+                                            onclick="
+                const input = document.getElementById('passwordInput');
+                const icon = document.getElementById('toggleIcon');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.textContent = '🙈';
+                } else {
+                    input.type = 'password';
+                    icon.textContent = '👁️';
+                }
+            "
+                                            style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; padding: 0; line-height: 1;">
+                                            <span id="toggleIcon">👁️</span>
+                                        </button>
                                     </div>
                                 </div>
 
