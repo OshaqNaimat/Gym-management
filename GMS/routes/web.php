@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Memberattendancecontroller;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDashboardController;
 use App\Http\Controllers\PaymentController;
@@ -23,7 +24,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Member Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/member-profile',   fn() => view('member-profile'))->name('member.profile');
-    Route::get('/member-attendence',fn() => view('member-attendence'))->name('member.attendance');
+Route::get('/member-attendence', [Memberattendancecontroller::class, 'index'])->name('member.attendance');
     Route::get('/member-payment',   fn() => view('member-payment'))->name('member.payment');
     Route::get('/member-dashboard', [MemberDashboardController::class, 'index'])
     ->middleware('auth')
