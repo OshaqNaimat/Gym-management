@@ -125,6 +125,16 @@
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
+                            @if ($errors->updateMember->any() && session('edit_member_id') == $member->id)
+                                <div
+                                    style="background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);
+            color:#f87171;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:13px;">
+                                    <i class="fa fa-circle-exclamation"></i>
+                                    @foreach ($errors->updateMember->all() as $error)
+                                        {{ $error }}<br>
+                                    @endforeach
+                                </div>
+                            @endif
                             <div class="row g-3">
                                 <div class="col-6">
                                     <label class="form-label">Full Name</label>
@@ -210,10 +220,10 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    @if ($errors->any())
+                    @if ($errors->addMember->any())
                         <div class="alert alert-danger">
                             <ul class="mb-0">
-                                @foreach ($errors->all() as $error)
+                                @foreach ($errors->addMember->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
                             </ul>
@@ -223,9 +233,9 @@
                         <div class="col-6">
                             <label class="form-label">Full Name</label>
                             <input type="text" name="name"
-                                class="form-control @error('name') is-invalid @enderror" placeholder="John Doe"
-                                value="{{ old('name') }}" required>
-                            @error('name')
+                                class="form-control @error('name', 'addMember') is-invalid @enderror"
+                                placeholder="John Doe" value="{{ old('name') }}" required>
+                            @error('name', 'addMember')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -237,18 +247,18 @@
                         <div class="col-6">
                             <label class="form-label">Email</label>
                             <input type="email" name="email"
-                                class="form-control @error('email') is-invalid @enderror" placeholder="john@email.com"
-                                value="{{ old('email') }}" required>
-                            @error('email')
+                                class="form-control @error('email', 'addMember') is-invalid @enderror"
+                                placeholder="john@email.com" value="{{ old('email') }}" required>
+                            @error('email', 'addMember')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-6">
                             <label class="form-label">Password <small class="text-muted">(min. 6)</small></label>
                             <input type="password" name="password" id="password"
-                                class="form-control @error('password') is-invalid @enderror" placeholder="abcd123...."
-                                minlength="6" required>
-                            @error('password')
+                                class="form-control @error('password', 'addMember') is-invalid @enderror"
+                                placeholder="abcd123...." minlength="6" required>
+                            @error('password', 'addMember')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -328,10 +338,20 @@
         });
     </script>
 
-    @if ($errors->any())
+    @if ($errors->addMember->any())
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 new bootstrap.Modal(document.getElementById('addMemberModal')).show();
+            });
+        </script>
+    @endif
+
+    @if ($errors->updateMember->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var memberId = {{ session('edit_member_id', 0) }};
+                var modal = document.getElementById('editMemberModal' + memberId);
+                if (modal) new bootstrap.Modal(modal).show();
             });
         </script>
     @endif
