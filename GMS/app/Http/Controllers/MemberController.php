@@ -164,40 +164,41 @@ return view('admin-dashboard', compact(
     $memberCount = $members->count();
     return view('member_control', compact('members', 'memberCount'));
 }
+public function store(Request $request)
+{
+    $request->validateWithBag('addMember', [
+        'name'        => 'required|string|max:255',
+        'email'       => 'required|email|unique:users,email',
+        'password'    => 'required|min:6|confirmed',
+        'roll_number' => 'nullable|string|unique:users,roll_number',
+        'phone'       => 'nullable|string',
+        'plan'        => 'nullable|in:Trial,Monthly,Quarterly,Annual',
+        'amount'      => 'nullable|integer|min:0',
+        'gender'      => 'nullable|in:Male,Female,Other',
+    ], [
+        'roll_number.unique' => 'This roll number is already allocated to another member.',
+    ]);
 
-    public function store(Request $request)
-    {
-        $request->validateWithBag('updateMember', [
-    'name'        => 'required|string|max:255',
-    'email'       => 'required|email|unique:users,email,' . $user->id . ',id',
-    'password'    => 'nullable|min:6|confirmed',
-    'roll_number' => 'nullable|string|unique:users,roll_number,' . $user->id . ',id',
-    'phone'       => 'nullable|string',
-    'plan'        => 'nullable|in:Trial,Monthly,Quarterly,Annual',
-    'amount'      => 'nullable|integer|min:0',
-    'gender'      => 'nullable|in:Male,Female,Other',
-], [
-    'roll_number.unique' => 'This roll number is already allocated to another member.',
-]);
+    $user = User::create([
+        'name'        => $request->name,
+        'email'       => $request->email,
+        'password'    => Hash::make($request->password),
+        'role'        => 'member',
+        'roll_number' => $request->roll_number,
+        'phone'       => $request->phone,
+        'plan'        => $request->plan,
+        'amount'      => $request->amount,
+        'gender'      => $request->gender,
+    ]);
 
-      $user = User::create([
-    'name'        => $request->name,
-    'email'       => $request->email,
-    'password'    => Hash::make($request->password),
-    'role'        => 'member',
-    'roll_number' => $request->roll_number,
-    'phone'       => $request->phone,
-    'plan'        => $request->plan,
-    'amount'      => $request->amount,
-    'gender'      => $request->gender,
-]);
-          Notification::create([          // ← now $user is defined
+    Notification::create([
         'type'    => 'member_added',
         'title'   => 'New Member Added',
         'message' => $user->name . ' has been added with a ' . $user->plan . ' plan.',
         'is_read' => false,
     ]);
-       if ($user->plan && $user->amount) {
+
+    if ($user->plan && $user->amount) {
         \App\Models\Payment::create([
             'user_id' => $user->id,
             'plan'    => $user->plan,
@@ -207,12 +208,15 @@ return view('admin-dashboard', compact(
             'date'    => now()->toDateString(),
         ]);
     }
-        return back()->with('success', 'Member added successfully!');
-    }
 
- public function update(Request $request, User $user)
+    return back()->with('success', 'Member added successfully!');
+}
+
+ public function update(Request $request, $id)
 {
-    $request->validate([
+    $user = User::findOrFail($id);
+
+    $request->validateWithBag('updateMember', [
         'name'        => 'required|string|max:255',
         'email'       => 'required|email|unique:users,email,' . $user->id . ',id',
         'password'    => 'nullable|min:6|confirmed',
@@ -225,10 +229,8 @@ return view('admin-dashboard', compact(
         'roll_number.unique' => 'This roll number is already allocated to another member.',
     ]);
 
-    // Capture old plan BEFORE update
     $oldPlan = $user->plan;
 
-    // Build update data
     $updateData = [
         'name'            => $request->name,
         'email'           => $request->email,
@@ -244,10 +246,8 @@ return view('admin-dashboard', compact(
         $updateData['password'] = Hash::make($request->password);
     }
 
-    // Use direct DB update to avoid Authenticatable issue
     User::where('id', $user->id)->update($updateData);
 
-    // Create payment record only if plan changed
     $planChanged = $oldPlan !== $request->plan;
     if ($planChanged && $request->plan && $request->amount) {
         \App\Models\Payment::create([
@@ -260,6 +260,8 @@ return view('admin-dashboard', compact(
         ]);
     }
 
-    return back()->with('success', 'Member updated successfully!');
+    return back()
+        ->with('success', 'Member updated successfully!')
+        ->with('edit_member_id', $user->id);
 }
 }
