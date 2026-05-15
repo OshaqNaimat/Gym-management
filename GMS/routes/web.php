@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Memberattendancecontroller;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDashboardController;
+use App\Http\Controllers\MemberPaymentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SearchController;
@@ -25,7 +26,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/member-profile',   fn() => view('member-profile'))->name('member.profile');
 Route::get('/member-attendence', [Memberattendancecontroller::class, 'index'])->name('member.attendance');
-    Route::get('/member-payment',   fn() => view('member-payment'))->name('member.payment');
+Route::get('/member-payment', [MemberPaymentController::class, 'index'])->name('member.payment');
     Route::get('/member-dashboard', [MemberDashboardController::class, 'index'])
     ->middleware('auth')
     ->name('member.dash');
