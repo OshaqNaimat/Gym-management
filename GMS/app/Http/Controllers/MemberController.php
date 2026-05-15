@@ -195,35 +195,61 @@ return view('admin-dashboard', compact(
         'message' => $user->name . ' has been added with a ' . $user->plan . ' plan.',
         'is_read' => false,
     ]);
+       if ($user->plan && $user->amount) {
+        \App\Models\Payment::create([
+            'user_id' => $user->id,
+            'plan'    => $user->plan,
+            'amount'  => $user->amount,
+            'method'  => 'Cash',
+            'status'  => 'Paid',
+            'date'    => now()->toDateString(),
+        ]);
+    }
         return back()->with('success', 'Member added successfully!');
     }
 
-    public function update(Request $request, User $user)
-    {
-        $request->validate([
-            'name'        => 'required|string|max:255',
-            'email'       => 'required|email|unique:users,email,' . $user->id,
-            'password'    => 'nullable|min:6|confirmed',
-            'roll_number' => 'nullable|string',
-            'phone'       => 'nullable|string',
-            'plan'        => 'nullable|in:Trial,Monthly,Quarterly,Annual',
-            'amount'      => 'nullable|integer|min:0',
-            'gender'      => 'nullable|in:Male,Female,Other',
-        ]);
+  public function update(Request $request, User $user)
+{
+    $request->validate([
+        'name'        => 'required|string|max:255',
+        'email'       => 'required|email|unique:users,email,' . $user->id,
+        'password'    => 'nullable|min:6|confirmed',
+        'roll_number' => 'nullable|string',
+        'phone'       => 'nullable|string',
+        'plan'        => 'nullable|in:Trial,Monthly,Quarterly,Annual',
+        'amount'      => 'nullable|integer|min:0',
+        'gender'      => 'nullable|in:Male,Female,Other',
+    ]);
 
-        $user->update([
-            'name'        => $request->name,
-            'email'       => $request->email,
-            'roll_number' => $request->roll_number,
-            'phone'       => $request->phone,
-            'plan'        => $request->plan,
-            'amount'      => $request->amount,
-            'gender'      => $request->gender,
-            'plan_updated_at' => now(),
-            ...($request->filled('password') ? ['password' => Hash::make($request->password)] : []),
-        ]);
+    // ── Capture OLD plan BEFORE update ───────────────────────────────────
+    $oldPlan = $user->plan;
 
-        return back()->with('success', 'Member updated successfully!');
+    $user->update([
+        'name'            => $request->name,
+        'email'           => $request->email,
+        'roll_number'     => $request->roll_number,
+        'phone'           => $request->phone,
+        'plan'            => $request->plan,
+        'amount'          => $request->amount,
+        'gender'          => $request->gender,
+        'plan_updated_at' => now(),
+        ...($request->filled('password') ? ['password' => Hash::make($request->password)] : []),
+    ]);
+
+    // ── Create payment only if plan changed ──────────────────────────────
+    $planChanged = $oldPlan !== $request->plan;
+
+    if ($planChanged && $user->plan && $user->amount) {
+        \App\Models\Payment::create([
+            'user_id' => $user->id,
+            'plan'    => $user->plan,
+            'amount'  => $user->amount,
+            'method'  => 'Cash',
+            'status'  => 'Paid',
+            'date'    => now()->toDateString(),
+        ]);
     }
 
+    return back()->with('success', 'Member updated successfully!');
+}
 }

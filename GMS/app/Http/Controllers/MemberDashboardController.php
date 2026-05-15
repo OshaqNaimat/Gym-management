@@ -107,21 +107,68 @@ class MemberDashboardController extends Controller
         // offset = circumference × (1 - pct/100)
         $circleCircumference = 213.6;
         $attCircleOffset     = round($circleCircumference * (1 - $attendanceRate / 100), 1);
+        // ── Check-in Streak ──────────────────────────────────────────────────────
+$presentDates = Attendance::where('user_id', $user->id)
+    ->where('status', 'present')
+    ->orderBy('date', 'desc')
+    ->pluck('date')
+    ->map(fn($d) => \Carbon\Carbon::parse($d)->toDateString())
+    ->toArray();
+
+$streak = 0;
+$check  = $now->copy()->toDateString();
+foreach ($presentDates as $date) {
+    if ($date === $check) {
+        $streak++;
+        $check = \Carbon\Carbon::parse($check)->subDay()->toDateString();
+    } else {
+        break;
+    }
+}
+
+// ── Plan Usage ───────────────────────────────────────────────────────────
+$planTotalDays = match ($user->plan) {
+    'Trial'     => 1,
+    'Monthly'   => 30,
+    'Quarterly' => 90,
+    'Annual'    => 365,
+    default     => null,
+};
+
+$planUsedDays  = $planTotalDays
+    ? min($planTotalDays, (int) $joinedAt->diffInDays($now))
+    : null;
+
+$planUsagePct  = ($planTotalDays && $planTotalDays > 0)
+    ? min(100, round(($planUsedDays / $planTotalDays) * 100))
+    : 0;
+
+// Circle offsets
+$streakMax        = 30; // treat 30 days as 100%
+$streakPct        = min(100, round(($streak / $streakMax) * 100));
+$streakOffset     = round($circleCircumference * (1 - $streakPct / 100), 1);
+$planUsageOffset  = round($circleCircumference * (1 - $planUsagePct / 100), 1);
 
         return view('member-dashboard', compact(
-            'user',
-            'expiry',
-            'daysLeft',
-            'thisMonthCheckins',
-            'lastMonthCheckins',
-            'attendanceRate',
-            'attendanceDelta',
-            'monthlyData',
-            'weeklyData',
-            'recentPayments',
-            'nextPayment',
-            'attCircleOffset',
-            'circleCircumference',
-        ));
+    'user',
+    'expiry',
+    'daysLeft',
+    'thisMonthCheckins',
+    'lastMonthCheckins',
+    'attendanceRate',
+    'attendanceDelta',
+    'monthlyData',
+    'weeklyData',
+    'recentPayments',
+    'nextPayment',
+    'attCircleOffset',
+    'circleCircumference',
+    'streak',
+    'streakOffset',
+    'planUsedDays',
+    'planTotalDays',
+    'planUsagePct',
+    'planUsageOffset',
+));
     }
 }

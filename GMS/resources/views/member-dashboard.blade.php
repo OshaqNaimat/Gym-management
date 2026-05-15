@@ -51,7 +51,7 @@
             <!-- Stat Cards -->
             <div class="row g-3 mb-4">
                 {{-- Check-ins this month --}}
-                <div class="col-6 col-xl-3">
+                <div class="col-6 col-xl-4">
                     <div class="stat-card c1">
                         <div class="stat-icon"><i class="fa fa-fire"></i></div>
                         <div class="stat-label">This Month</div>
@@ -61,7 +61,7 @@
                 </div>
 
                 {{-- Attendance rate --}}
-                <div class="col-6 col-xl-3">
+                <div class="col-6 col-xl-4">
                     <div class="stat-card c4">
                         <div class="stat-icon"><i class="fa fa-circle-check"></i></div>
                         <div class="stat-label">Attendance Rate</div>
@@ -78,7 +78,7 @@
                 </div>
 
                 {{-- Days left on plan --}}
-                <div class="col-6 col-xl-3">
+                <div class="col-6 col-xl-4">
                     <div class="stat-card c2">
                         <div class="stat-icon"><i class="fa fa-calendar-days"></i></div>
                         <div class="stat-label">Days Left</div>
@@ -88,7 +88,7 @@
                 </div>
 
                 {{-- Next payment --}}
-                <div class="col-6 col-xl-3">
+                {{-- <div class="col-6 col-xl-3">
                     <div class="stat-card c3">
                         <div class="stat-icon"><i class="fa fa-dollar-sign"></i></div>
                         <div class="stat-label">Next Payment</div>
@@ -107,7 +107,7 @@
                             @endif
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Charts Row -->
@@ -165,33 +165,38 @@
                             </div>
                             {{-- Workouts & Cardio circles are goal-based;
                                  wire these up once you have a goals/workouts table --}}
+                            {{-- Check-in Streak circle --}}
                             <div class="circle-wrap">
                                 <div class="circle">
                                     <svg width="80" height="80" viewBox="0 0 80 80">
                                         <circle class="circle-bg" cx="40" cy="40" r="34" />
                                         <circle class="circle-fill" cx="40" cy="40" r="34"
-                                            stroke="#4ade80" stroke-dasharray="213.6" stroke-dashoffset="64" />
+                                            stroke="#f97316" stroke-dasharray="{{ $circleCircumference }}"
+                                            stroke-dashoffset="{{ $streakOffset }}" />
                                     </svg>
-                                    <div class="circle-val" style="color:#4ade80;">70%</div>
+                                    <div class="circle-val" style="color:#f97316;">{{ $streak }}d</div>
                                 </div>
-                                <div class="circle-lbl">Workouts</div>
+                                <div class="circle-lbl">Streak</div>
                             </div>
+
+                            {{-- Plan Usage circle --}}
                             <div class="circle-wrap">
                                 <div class="circle">
                                     <svg width="80" height="80" viewBox="0 0 80 80">
                                         <circle class="circle-bg" cx="40" cy="40" r="34" />
                                         <circle class="circle-fill" cx="40" cy="40" r="34"
-                                            stroke="#4fc3f7" stroke-dasharray="213.6" stroke-dashoffset="106.8" />
+                                            stroke="#4fc3f7" stroke-dasharray="{{ $circleCircumference }}"
+                                            stroke-dashoffset="{{ $planUsageOffset }}" />
                                     </svg>
-                                    <div class="circle-val" style="color:#4fc3f7;">50%</div>
+                                    <div class="circle-val" style="color:#4fc3f7;">{{ $planUsagePct }}%</div>
                                 </div>
-                                <div class="circle-lbl">Cardio</div>
+                                <div class="circle-lbl">Plan Used</div>
                             </div>
                         </div>
 
                         {{-- Check-in goal progress (dynamic) --}}
                         @php
-                            $checkinGoal = 25; // adjust or pull from settings table
+                            $checkinGoal = 30; // adjust or pull from settings table
                             $checkinPct =
                                 $checkinGoal > 0 ? min(100, round(($thisMonthCheckins / $checkinGoal) * 100)) : 0;
                         @endphp
@@ -205,12 +210,12 @@
                                     style="width:{{ $checkinPct }}%;background:var(--accent);"></div>
                             </div>
                         </div>
-                        <div class="prog-row">
+                        {{-- <div class="prog-row">
                             <div class="prog-label"><span>Workout Goal</span><span>14/20</span></div>
                             <div class="prog-bar-bg">
                                 <div class="prog-bar-fill" style="width:70%;background:#4ade80;"></div>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -220,7 +225,9 @@
                 <div class="col-lg-12">
                     <div class="section-head">
                         <h2>Recent Payments</h2>
-                        <button class="btn-outline-accent" onclick="showPage('payments')">View All</button>
+                        <a href="/member-payment" class="btn-outline-accent text-decoration-none">
+                            View All</a>
+
                     </div>
                     <div class="chart-card">
                         @forelse($recentPayments as $payment)
