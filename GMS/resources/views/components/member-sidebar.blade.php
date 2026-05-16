@@ -2,7 +2,7 @@
     <!-- ── Sidebar ─────────────────────────────────────────────── -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-logo">
-            <h1 class="pump-house">PUMP HOUSE</h1>
+            <h1 class="pump-house">MYGYM</h1>
             <span>Member Portal</span>
         </div>
 

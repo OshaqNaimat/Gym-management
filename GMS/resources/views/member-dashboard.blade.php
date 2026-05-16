@@ -322,7 +322,7 @@
                                         <div>
                                             <div style="font-size:11px;color:var(--muted);">Gym Name</div>
                                             <div style="font-weight:600;font-size:14px;">
-                                                {{ $gymSettings->gym_name ?? 'Pump House' }}</div>
+                                                {{ $gymSettings->gym_name ?? 'MYGYM' }}</div>
                                         </div>
                                     </div>
                                     <div style="display:flex;align-items:center;gap:10px;">

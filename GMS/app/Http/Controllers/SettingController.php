@@ -12,7 +12,7 @@ class SettingController extends Controller
     public function index()
     {
         $settings = GymSetting::firstOrCreate([], [
-            'gym_name'       => 'Pump House',
+            'gym_name'       => 'MYGYM',
             'email'          => 'admin@pumphouse.gym',
             'phone'          => '+92 300 0000000',
             'address'        => '123 Fitness Ave, Rawalpindi',

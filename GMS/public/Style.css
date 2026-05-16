@@ -2906,7 +2906,7 @@ tbody tr:hover {
 }
 
 .hero-card::after {
-    content: "PUMP HOUSE";
+    content: "MYGYM";
     font-family: "Bebas Neue", sans-serif;
     font-size: 80px;
     letter-spacing: 4px;

@@ -13,7 +13,7 @@ return new class extends Migration
 {
     Schema::create('gym_settings', function (Blueprint $table) {
         $table->id();
-        $table->string('gym_name')->default('Pump House');
+        $table->string('gym_name')->default('MYGYM');
         $table->string('email')->default('admin@pumphouse.gym');
         $table->string('phone')->default('+92 300 0000000');
         $table->string('address')->default('123 Fitness Ave, Rawalpindi');
