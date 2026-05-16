@@ -9,8 +9,7 @@
         <div class="nav-section">My Space</div>
         <a class="nav-item active" href="/member-dashboard"><i class="fa fa-gauge-high"></i> Dashboard</a>
         <a class="nav-item" href="/member-attendence"><i class="fa fa-clipboard-check"></i> My Attendance</a>
-        <a href="{{ route('member.cardio') }}"
-            class="nav-item {{ request()->routeIs('member.cardio') ? 'active' : '' }}">
+        <a href="{{ route('member.cardio') }}" class="nav-item {{ request()->is('my-cardio') ? 'active' : '' }}">
             <i class="fa fa-person-running"></i>
             My Cardio
         </a>

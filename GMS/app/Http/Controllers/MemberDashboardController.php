@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\CardioLog;
+use App\Models\GymSetting;
 use App\Models\Payment;
 use Carbon\Carbon;
 
@@ -164,6 +165,7 @@ $cardioGoal = 500 * now()->day;
 $cardioPct  = $cardioGoal > 0 ? min(100, round(($totalCaloriesMonth / $cardioGoal) * 100)) : 0;
 $cardioOffset = $circleCircumference - ($circleCircumference * $cardioPct / 100);
 
+$gymSettings = GymSetting::first();
         return view('member-dashboard', compact(
     'user',
     'expiry',
@@ -187,7 +189,9 @@ $cardioOffset = $circleCircumference - ($circleCircumference * $cardioPct / 100)
     'totalCaloriesToday',
     'totalCaloriesMonth',
     'cardioPct',
-    'cardioOffset'
+    'cardioOffset',
+    'gymSettings'
+
 ));
     }
 }

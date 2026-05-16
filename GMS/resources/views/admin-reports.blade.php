@@ -80,11 +80,12 @@
             const max = Math.max(...entries.map(([, v]) => v));
 
             el.innerHTML = entries.map(([month, count], i) => `
-                <div class="bar-wrap">
-                    <div class="bar" style="height:${Math.round((count/max)*100)}%;background:${i === entries.length-1 ? 'var(--accent)' : 'var(--surface2)'};"></div>
-                    <div class="bar-label">${month}</div>
-                </div>
-            `).join('');
+    <div class="bar-wrap" style="position:relative;">
+        <div class="bar-tooltip">${count} sign-up${count !== 1 ? 's' : ''}<br><span>${month}</span></div>
+        <div class="bar" style="height:${Math.round((count/max)*100)}%;background:${i === entries.length-1 ? 'var(--accent)' : 'var(--surface2)'};border-radius:4px 4px 0 0;"></div>
+        <div class="bar-label">${month}</div>
+    </div>
+`).join('');
         });
     </script>
 </x-layout>

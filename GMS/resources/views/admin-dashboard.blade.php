@@ -276,11 +276,14 @@
             const max = Math.max(...data.map(d => d.amount), 1);
             chart.innerHTML = data.map(d => {
                 const pct = ((d.amount / max) * 100).toFixed(1);
+                const formatted = '$' + Number(d.amount).toLocaleString();
                 return `
-                <div class="bar-wrap" title="$${Number(d.amount).toLocaleString()}">
-                    <div class="bar" style="height:${pct}%"></div>
-                    <div class="bar-label">${d.label}</div>
-                </div>`;
+        <div class="bar-wrap" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:140px;position:relative;">
+            <div class="bar-tooltip">${formatted}<br><span>${d.label}</span></div>
+            <div class="bar-count" style="font-size:10px;color:var(--muted);margin-bottom:3px;">${formatted}</div>
+            <div class="bar-fill" style="width:60%;height:${pct}%;background:var(--accent);border-radius:4px 4px 0 0;transition:filter 0.2s;"></div>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px;">${d.label}</div>
+        </div>`;
             }).join('');
         }
 
@@ -301,10 +304,12 @@
             chart.innerHTML = data.map(d => {
                 const pct = ((d.count / max) * 100).toFixed(1);
                 return `
-            <div class="bar-wrap" title="${d.count} members">
-                <div class="bar" style="height:${pct}%;background:#4fc3f7;"></div>
-                <div class="bar-label">${d.label}</div>
-            </div>`;
+        <div class="bar-wrap" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:140px;position:relative;">
+            <div class="bar-tooltip">${d.count} member${d.count !== 1 ? 's' : ''}<br><span>${d.label}</span></div>
+            <div class="bar-count" style="font-size:10px;color:var(--muted);margin-bottom:3px;">${d.count}</div>
+            <div class="bar-fill" style="width:60%;height:${pct}%;background:#4fc3f7;border-radius:4px 4px 0 0;transition:filter 0.2s;"></div>
+            <div style="font-size:10px;color:var(--muted);margin-top:4px;">${d.label}</div>
+        </div>`;
             }).join('');
         }
 

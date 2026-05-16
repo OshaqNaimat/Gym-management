@@ -3441,3 +3441,45 @@ tbody tr:hover {
     animation: searchBlink 2.5s ease-in-out forwards;
     border-radius: 12px;
 }
+/* Bar chart tooltip */
+.bar-wrap {
+    cursor: pointer;
+}
+
+.bar-tooltip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% - 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--card, #1e1e1e);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 8px;
+    white-space: nowrap;
+    z-index: 10;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.bar-tooltip span {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 10px;
+}
+
+.bar-wrap:hover .bar-tooltip {
+    display: block;
+}
+
+.bar-wrap:hover .bar-fill {
+    filter: brightness(1.3);
+}
+
+.bar-wrap:hover .bar-count {
+    color: var(--accent);
+    font-weight: 600;
+}

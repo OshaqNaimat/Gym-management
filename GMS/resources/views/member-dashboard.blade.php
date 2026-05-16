@@ -298,6 +298,141 @@
                 </div>
             </div>
 
+            {{-- Gym Info Card --}}
+            <div class="row g-3 mt-2">
+                <div class="col-12">
+                    <div class="chart-card">
+                        <div class="section-head mb-3">
+                            <h2>Gym Information</h2>
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start;">
+
+                            {{-- Contact Info --}}
+                            <div style="flex:1;min-width:200px;">
+                                <div
+                                    style="font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;">
+                                    Contact
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:10px;">
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div
+                                            style="width:32px;height:32px;border-radius:8px;background:rgba(var(--accent-rgb),.1);display:flex;align-items:center;justify-content:center;">
+                                            <i class="fa fa-dumbbell" style="color:var(--accent);font-size:12px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size:11px;color:var(--muted);">Gym Name</div>
+                                            <div style="font-weight:600;font-size:14px;">
+                                                {{ $gymSettings->gym_name ?? 'Pump House' }}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div
+                                            style="width:32px;height:32px;border-radius:8px;background:rgba(var(--accent-rgb),.1);display:flex;align-items:center;justify-content:center;">
+                                            <i class="fa fa-phone" style="color:var(--accent);font-size:12px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size:11px;color:var(--muted);">Phone</div>
+                                            <div style="font-weight:600;font-size:14px;">
+                                                {{ $gymSettings->phone ?? 'N/A' }}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:10px;">
+                                        <div
+                                            style="width:32px;height:32px;border-radius:8px;background:rgba(var(--accent-rgb),.1);display:flex;align-items:center;justify-content:center;">
+                                            <i class="fa fa-location-dot"
+                                                style="color:var(--accent);font-size:12px;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="font-size:11px;color:var(--muted);">Address</div>
+                                            <div style="font-weight:600;font-size:14px;">
+                                                {{ $gymSettings->address ?? 'N/A' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Divider --}}
+                            <div style="width:1px;background:var(--border);align-self:stretch;"
+                                class="d-none d-md-block"></div>
+
+                            {{-- Opening Hours --}}
+                            <div style="flex:1;min-width:200px;">
+                                <div
+                                    style="font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;">
+                                    Opening Hours
+                                </div>
+                                <div style="display:flex;flex-direction:column;gap:10px;">
+                                    <div
+                                        style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:8px;">
+                                        <span style="font-size:13px;color:var(--muted);">Weekdays</span>
+                                        <span style="font-weight:600;color:var(--accent);">
+                                            {{ $gymSettings->weekday_open ?? '05:00' }} –
+                                            {{ $gymSettings->weekday_close ?? '22:00' }}
+                                        </span>
+                                    </div>
+                                    <div
+                                        style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:8px;">
+                                        <span style="font-size:13px;color:var(--muted);">Saturday</span>
+                                        <span style="font-weight:600;color:var(--accent);">
+                                            {{ $gymSettings->saturday_open ?? '07:00' }} –
+                                            {{ $gymSettings->saturday_close ?? '20:00' }}
+                                        </span>
+                                    </div>
+                                    <div
+                                        style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border-radius:8px;">
+                                        <span style="font-size:13px;color:var(--muted);">Sunday</span>
+                                        <span style="font-weight:600;color:var(--accent);">
+                                            {{ $gymSettings->sunday_open ?? '08:00' }} –
+                                            {{ $gymSettings->sunday_close ?? '18:00' }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Divider --}}
+                            <div style="width:1px;background:var(--border);align-self:stretch;"
+                                class="d-none d-md-block"></div>
+
+                            {{-- Open Now indicator --}}
+                            <div
+                                style="min-width:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;">
+                                @php
+                                    $now = now();
+                                    $currentTime = $now->format('H:i');
+                                    $day = $now->dayOfWeek; // 0=Sun, 6=Sat
+
+                                    $open = match ($day) {
+                                        6 => $gymSettings->saturday_open ?? '07:00',
+                                        0 => $gymSettings->sunday_open ?? '08:00',
+                                        default => $gymSettings->weekday_open ?? '05:00',
+                                    };
+                                    $close = match ($day) {
+                                        6 => $gymSettings->saturday_close ?? '20:00',
+                                        0 => $gymSettings->sunday_close ?? '18:00',
+                                        default => $gymSettings->weekday_close ?? '22:00',
+                                    };
+
+                                    $isOpen = $currentTime >= $open && $currentTime <= $close;
+                                @endphp
+
+                                <div
+                                    style="width:56px;height:56px;border-radius:50%;background:{{ $isOpen ? 'rgba(74,222,128,0.15)' : 'rgba(248,113,113,0.15)' }};display:flex;align-items:center;justify-content:center;">
+                                    <i class="fa fa-{{ $isOpen ? 'door-open' : 'door-closed' }}"
+                                        style="font-size:22px;color:{{ $isOpen ? '#4ade80' : '#f87171' }};"></i>
+                                </div>
+                                <div
+                                    style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:{{ $isOpen ? '#4ade80' : '#f87171' }};">
+                                    {{ $isOpen ? 'OPEN NOW' : 'CLOSED' }}
+                                </div>
+                                <div style="font-size:11px;color:var(--muted);">
+                                    {{ $isOpen ? 'Closes at ' . $close : 'Opens at ' . $open }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div><!-- /#page-dashboard -->
     </div>
 
@@ -318,10 +453,16 @@
                 var barH = Math.round((data[j].value / maxV) * 110);
                 if (data[j].value > 0 && barH < 6) barH = 6;
                 html +=
-                    '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;">';
-                html += '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;">' + data[j].value + '</div>';
-                html += '<div style="width:60%;height:' + barH +
-                    'px;background:var(--accent);border-radius:4px 4px 0 0;"></div>';
+                    '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;position:relative;" class="bar-wrap">';
+
+                // Tooltip
+                html += '<div class="bar-tooltip">' + data[j].value + ' check-in' + (data[j].value !== 1 ? 's' : '') +
+                    '<br><span>' + data[j].label + '</span></div>';
+
+                html += '<div style="font-size:10px;color:var(--muted);margin-bottom:3px;" class="bar-count">' + data[j]
+                    .value + '</div>';
+                html += '<div class="bar-fill" style="width:60%;height:' + barH +
+                    'px;background:var(--accent);border-radius:4px 4px 0 0;transition:filter 0.2s;"></div>';
                 html += '<div style="font-size:10px;color:var(--muted);margin-top:4px;">' + data[j].label + '</div>';
                 html += '</div>';
             }
