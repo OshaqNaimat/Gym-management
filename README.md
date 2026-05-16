@@ -15,7 +15,7 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 ![Members](GMS/screenshot/admin-member-control.png)
 
 **Attendance**  
-![Attendance](GMS/screenshot/admin-attendance-control.png)
+![Attendance](GMS/screenshot/admin-attendence-control.png)
 
 **Payments**  
 ![Payments](GMS/screenshot/admin-payment-control.png)
@@ -34,7 +34,7 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 ![Member Dashboard](GMS/screenshot/member-dashboard.png)
 
 **Attendance**  
-![Member Attendance](GMS/screenshot/member-attendance.png)
+![Member Attendance](GMS/screenshot/member-attendence.png)
 
 **Cardio Tracker**  
 ![Cardio](GMS/screenshot/member-cardio.png)
