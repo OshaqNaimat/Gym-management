@@ -162,10 +162,23 @@
                         </div>
                         <button type="submit" class="btn-outline-accent mt-3">Update Password</button>
                     </form>
+
                 </div>
 
             </div>
         </div>
+        <form action="{{ route('member.profile.update') }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="row g-3">
+                <div class="col-6">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" name="weight" class="form-control" value="{{ $user->weight }}"
+                        placeholder="e.g. 70" step="0.1" min="1">
+                </div>
+            </div>
+            <button type="submit" class="btn-accent mt-3">Save</button>
+        </form>
     </div>
 
 </x-layout>

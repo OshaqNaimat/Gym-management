@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttendanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CardioController;
 use App\Http\Controllers\Memberattendancecontroller;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MemberDashboardController;
@@ -33,6 +34,10 @@ Route::get('/member-payment', [MemberPaymentController::class, 'index'])->name('
     Route::get('/member-dashboard', [MemberDashboardController::class, 'index'])
     ->middleware('auth')
     ->name('member.dash');
+    Route::get('/my-cardio', [CardioController::class, 'index'])->name('member.cardio');
+Route::post('/my-cardio', [CardioController::class, 'store'])->name('member.cardio.store');
+Route::delete('/my-cardio/{id}', [CardioController::class, 'destroy'])->name('member.cardio.destroy');
+Route::put('/member/profile', [MemberProfileController::class, 'update'])->name('member.profile.update');
 });
 
 // Admin Routes — protected by both auth + admin middleware

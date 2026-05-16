@@ -28,6 +28,7 @@ class User extends Authenticatable
     'gender',
     'roll_number',
     'amount',
+    'weight'
 ];
 
     /**
@@ -53,4 +54,8 @@ class User extends Authenticatable
             'plan_updated_at'   => 'datetime'
         ];
     }
+    public function cardioLogs()
+{
+    return $this->hasMany(CardioLog::class);
+}
 }

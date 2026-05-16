@@ -48,6 +48,7 @@ class MemberProfileController extends Controller
         ], [
             'password.confirmed' => 'New password and confirm password do not match.',
             'password.min'       => 'New password must be at least 6 characters.',
+
         ]);
 
         $user = Auth::user();
@@ -64,4 +65,18 @@ class MemberProfileController extends Controller
 
         return back()->with('password_success', 'Password updated successfully.');
     }
+    public function update(Request $request)
+{
+    $user = Auth::user();
+
+    $request->validate([
+        'weight' => 'nullable|numeric|min:1|max:300',
+    ]);
+
+    \App\Models\User::where('id', $user->id)->update([
+        'weight' => $request->weight,
+    ]);
+
+    return back()->with('success', 'Profile updated successfully.');
+}
 }
