@@ -164,21 +164,29 @@
                     </form>
 
                 </div>
+                <div class="chart-card mt-3">
+                    <h2
+                        style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px;margin-bottom:20px;">
+                        Cardio Info
+                    </h2>
+                    <form action="{{ route('member.profile.update') }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Weight (kg)</label>
+                                <input type="number" name="weight" class="form-control" value="{{ $user->weight }}"
+                                    placeholder="e.g. 70" step="0.1" min="1">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-accent mt-3">Save</button>
+                    </form>
+
+                </div>
 
             </div>
         </div>
-        <form action="{{ route('member.profile.update') }}" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="row g-3">
-                <div class="col-6">
-                    <label class="form-label">Weight (kg)</label>
-                    <input type="number" name="weight" class="form-control" value="{{ $user->weight }}"
-                        placeholder="e.g. 70" step="0.1" min="1">
-                </div>
-            </div>
-            <button type="submit" class="btn-accent mt-3">Save</button>
-        </form>
+
     </div>
 
 </x-layout>

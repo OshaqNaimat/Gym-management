@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
+use App\Models\CardioLog;
 use App\Models\Payment;
 use Carbon\Carbon;
 
@@ -149,6 +150,20 @@ $streakPct        = min(100, round(($streak / $streakMax) * 100));
 $streakOffset     = round($circleCircumference * (1 - $streakPct / 100), 1);
 $planUsageOffset  = round($circleCircumference * (1 - $planUsagePct / 100), 1);
 
+$totalCaloriesToday = CardioLog::where('user_id', $user->id)
+    ->whereDate('logged_at', today())
+    ->sum('calories');
+
+$totalCaloriesMonth = CardioLog::where('user_id', $user->id)
+    ->whereYear('logged_at', now()->year)
+    ->whereMonth('logged_at', now()->month)
+    ->sum('calories');
+
+// Cardio circle — goal is 500 kcal/day × days passed this month
+$cardioGoal = 500 * now()->day;
+$cardioPct  = $cardioGoal > 0 ? min(100, round(($totalCaloriesMonth / $cardioGoal) * 100)) : 0;
+$cardioOffset = $circleCircumference - ($circleCircumference * $cardioPct / 100);
+
         return view('member-dashboard', compact(
     'user',
     'expiry',
@@ -169,6 +184,10 @@ $planUsageOffset  = round($circleCircumference * (1 - $planUsagePct / 100), 1);
     'planTotalDays',
     'planUsagePct',
     'planUsageOffset',
+    'totalCaloriesToday',
+    'totalCaloriesMonth',
+    'cardioPct',
+    'cardioOffset'
 ));
     }
 }

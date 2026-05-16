@@ -51,7 +51,7 @@
             <!-- Stat Cards -->
             <div class="row g-3 mb-4">
                 {{-- Check-ins this month --}}
-                <div class="col-6 col-xl-4">
+                <div class="col-6 col-xl-3">
                     <div class="stat-card c1">
                         <div class="stat-icon"><i class="fa fa-fire"></i></div>
                         <div class="stat-label">This Month</div>
@@ -61,7 +61,7 @@
                 </div>
 
                 {{-- Attendance rate --}}
-                <div class="col-6 col-xl-4">
+                <div class="col-6 col-xl-3">
                     <div class="stat-card c4">
                         <div class="stat-icon"><i class="fa fa-circle-check"></i></div>
                         <div class="stat-label">Attendance Rate</div>
@@ -78,12 +78,29 @@
                 </div>
 
                 {{-- Days left on plan --}}
-                <div class="col-6 col-xl-4">
+                <div class="col-6 col-xl-3">
                     <div class="stat-card c2">
                         <div class="stat-icon"><i class="fa fa-calendar-days"></i></div>
                         <div class="stat-label">Days Left</div>
                         <div class="stat-value">{{ $daysLeft ?? '—' }}</div>
                         <div class="stat-sub">{{ $user->plan ?? 'No' }} plan active</div>
+                    </div>
+                </div>
+                {{-- ✅ ADD HERE --}}
+                {{-- Calories Today --}}
+                <div class="col-6 col-xl-3">
+                    <div class="stat-card"
+                        style="background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2);">
+                        <div class="stat-icon" style="background:rgba(248,113,113,0.15);color:#f87171;">
+                            <i class="fa fa-fire"></i>
+                        </div>
+                        <div class="stat-label">Today's Calories</div>
+                        <div class="stat-value" style="color:#f87171;">
+                            {{ $totalCaloriesToday > 0 ? number_format($totalCaloriesToday, 1) : '—' }}
+                        </div>
+                        <div class="stat-sub">
+                            {{ $totalCaloriesToday > 0 ? 'kcal burned today 🔥' : 'No cardio logged today' }}
+                        </div>
                     </div>
                 </div>
 
@@ -151,17 +168,18 @@
                         </div>
                         <div style="display:flex;justify-content:space-around;padding:10px 0 16px;">
                             {{-- Attendance circle --}}
+                            {{-- Cardio Calories circle --}}
                             <div class="circle-wrap">
                                 <div class="circle">
                                     <svg width="80" height="80" viewBox="0 0 80 80">
                                         <circle class="circle-bg" cx="40" cy="40" r="34" />
                                         <circle class="circle-fill" cx="40" cy="40" r="34"
-                                            stroke="var(--accent)" stroke-dasharray="{{ $circleCircumference }}"
-                                            stroke-dashoffset="{{ $attCircleOffset }}" />
+                                            stroke="#f87171" stroke-dasharray="{{ $circleCircumference }}"
+                                            stroke-dashoffset="{{ $cardioOffset }}" />
                                     </svg>
-                                    <div class="circle-val" style="color:var(--accent);">{{ $attendanceRate }}%</div>
+                                    <div class="circle-val" style="color:#f87171;">{{ $cardioPct }}%</div>
                                 </div>
-                                <div class="circle-lbl">Attendance</div>
+                                <div class="circle-lbl">Cardio</div>
                             </div>
                             {{-- Workouts & Cardio circles are goal-based;
                                  wire these up once you have a goals/workouts table --}}
@@ -192,6 +210,7 @@
                                 </div>
                                 <div class="circle-lbl">Plan Used</div>
                             </div>
+
                         </div>
 
                         {{-- Check-in goal progress (dynamic) --}}
@@ -208,6 +227,20 @@
                             <div class="prog-bar-bg">
                                 <div class="prog-bar-fill"
                                     style="width:{{ $checkinPct }}%;background:var(--accent);"></div>
+                            </div>
+                        </div>
+                        {{-- Cardio calories progress --}}
+                        @php
+                            $cardioMonthGoal = 500 * now()->day;
+                        @endphp
+                        <div class="prog-row">
+                            <div class="prog-label">
+                                <span>🔥 Calories This Month</span>
+                                <span>{{ number_format($totalCaloriesMonth) }} kcal</span>
+                            </div>
+                            <div class="prog-bar-bg">
+                                <div class="prog-bar-fill" style="width:{{ $cardioPct }}%;background:#f87171;">
+                                </div>
                             </div>
                         </div>
                         {{-- <div class="prog-row">
