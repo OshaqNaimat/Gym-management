@@ -1,4 +1,4 @@
-# 🏋️ Pump House — Gym Management System
+  # 🏋️ Pump House — Gym Management System
 
 A full-stack gym management system built with **Laravel 12** and **vanilla JS**, featuring a dark-themed admin panel and a dedicated member portal.
 
@@ -9,8 +9,8 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 ### 🖥️ Admin Panel
 
 **Dashboard**
-![Admin Dashboard](screenshot/admin-dashboard.png)
-<img src="./screenshot/admin-dashboard.png"/>
+<img src="screenshot/admin-dashboard.png" width="800"/>
+
 
 **Members**
 ![Members](screenshot/admin-member-control.png)
