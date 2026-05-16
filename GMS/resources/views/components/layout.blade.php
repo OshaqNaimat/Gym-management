@@ -921,6 +921,17 @@
             }
         });
     });
+    // Close sidebar when clicking outside
+    document.addEventListener('click', function(e) {
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.querySelector('.icon-btn.d-lg-none');
+
+        if (sidebar.classList.contains('open') &&
+            !sidebar.contains(e.target) &&
+            !toggleBtn.contains(e.target)) {
+            sidebar.classList.remove('open');
+        }
+    });
 </script>
 
 </html>

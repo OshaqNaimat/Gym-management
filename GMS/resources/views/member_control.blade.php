@@ -17,12 +17,12 @@
     <x-admin-sidebar />
 
     <div id="page-members" class="content">
-        <div class="section-head mb-3">
+        <div class="section-head mb-3" style="flex-wrap:wrap;gap:10px;">
             <div>
                 <h2 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:1px;">All Members</h2>
                 <div style="font-size:.8rem;color:var(--muted);">{{ $members->count() }} total members</div>
             </div>
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 <select class="form-select form-select-sm" style="width:140px;" id="planFilter">
                     <option value="all">All Plans</option>
                     <option value="Annual">Annual</option>
@@ -36,8 +36,8 @@
             </div>
         </div>
 
-        <div class="table-card">
-            <table>
+        <div class="table-card" style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table style="min-width:600px;">
                 <thead>
                     <tr>
                         <th>Member</th>
@@ -82,7 +82,8 @@
                         <tr id="member-{{ $member->id }}" data-plan="{{ $member->plan }}">
                             <td>
                                 <div style="display:flex;align-items:center;">
-                                    <div class="mem-avatar" style="background:{{ $color }};">{{ $initials }}
+                                    <div class="mem-avatar" style="background:{{ $color }};">
+                                        {{ $initials }}
                                     </div>
                                     {{ $member->name }}
                                 </div>
@@ -177,7 +178,8 @@
                                 <div class="col-6">
                                     <label class="form-label">Gender</label>
                                     <select name="gender" class="form-select">
-                                        <option value="Male" {{ $member->gender == 'Male' ? 'selected' : '' }}>Male
+                                        <option value="Male" {{ $member->gender == 'Male' ? 'selected' : '' }}>
+                                            Male
                                         </option>
                                         <option value="Female" {{ $member->gender == 'Female' ? 'selected' : '' }}>
                                             Female</option>
@@ -280,7 +282,8 @@
                                 </option>
                                 <option value="Monthly" {{ old('plan') == 'Monthly' ? 'selected' : '' }}>Monthly
                                 </option>
-                                <option value="Quarterly" {{ old('plan') == 'Quarterly' ? 'selected' : '' }}>Quarterly
+                                <option value="Quarterly" {{ old('plan') == 'Quarterly' ? 'selected' : '' }}>
+                                    Quarterly
                                 </option>
                                 <option value="Annual" {{ old('plan') == 'Annual' ? 'selected' : '' }}>Annual
                                 </option>
@@ -294,7 +297,8 @@
                         <div class="col-6">
                             <label class="form-label">Gender</label>
                             <select name="gender" class="form-select">
-                                <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>Male</option>
+                                <option value="Male" {{ old('gender') == 'Male' ? 'selected' : '' }}>Male
+                                </option>
                                 <option value="Female" {{ old('gender') == 'Female' ? 'selected' : '' }}>Female
                                 </option>
                                 <option value="Other" {{ old('gender') == 'Other' ? 'selected' : '' }}>Other

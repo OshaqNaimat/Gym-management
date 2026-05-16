@@ -1,7 +1,12 @@
 <x-layout>
     <div class="main">
         <div class="topbar">
-            <button class="icon-btn d-lg-none" onclick="document.getElementById('sidebar').classList.toggle('open')">
+            <button class="icon-btn d-lg-none"
+                onclick="
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').style.display =
+        document.getElementById('sidebar').classList.contains('open') ? 'block' : 'none';
+">
                 <i class="fa fa-bars"></i>
             </button>
             <div class="topbar-title" id="page-title">Dashboard</div>
@@ -41,6 +46,10 @@
                     <i class="fa fa-moon" id="themeIcon"></i>
                 </div>
             </div>
+        </div>
+        {{-- Mobile sidebar overlay --}}
+        <div id="sidebarOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;"
+            onclick="document.getElementById('sidebar').classList.remove('open');this.style.display='none';">
         </div>
         <script>
             const bellBtn = document.getElementById('bellBtn');
@@ -139,6 +148,18 @@
                 memberEl.classList.add('search-highlight-blink');
 
                 setTimeout(() => memberEl.classList.remove('search-highlight-blink'), 3000);
+            });
+            document.addEventListener('click', function(e) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                const toggleBtn = document.querySelector('.icon-btn.d-lg-none');
+
+                if (sidebar.classList.contains('open') &&
+                    !sidebar.contains(e.target) &&
+                    !toggleBtn.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                    overlay.style.display = 'none';
+                }
             });
         </script>
 
