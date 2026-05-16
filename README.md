@@ -12,38 +12,38 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 ![Admin Dashboard](GMS/screenshot/admin-dashboard.png)
 
 **Members**  
-![Members](screenshot/admin-member-control.png)
+![Members](GMS/screenshot/admin-member-control.png)
 
 **Attendance**  
-![Attendance](screenshot/admin-attendance-control.png)
+![Attendance](GMS/screenshot/admin-attendance-control.png)
 
 **Payments**  
-![Payments](screenshot/admin-payment-control.png)
+![Payments](GMS/screenshot/admin-payment-control.png)
 
 **Reports**  
-![Reports](screenshot/admin-reports-control.png)
+![Reports](GMS/screenshot/admin-reports-control.png)
 
 **Settings**  
-![Settings](screenshot/admin-setting-control.png)
+![Settings](GMS/screenshot/admin-setting-control.png)
 
 ---
 
 ## 👤 Member Portal
 
 **Dashboard**  
-![Member Dashboard](screenshot/member-dashboard.png)
+![Member Dashboard](GMS/screenshot/member-dashboard.png)
 
 **Attendance**  
-![Member Attendance](screenshot/member-attendance.png)
+![Member Attendance](GMS/screenshot/member-attendance.png)
 
 **Cardio Tracker**  
-![Cardio](screenshot/member-cardio.png)
+![Cardio](GMS/screenshot/member-cardio.png)
 
 **Payments**  
-![Member Payments](screenshot/member-payments.png)
+![Member Payments](GMS/screenshot/member-payments.png)
 
 **Profile**  
-![Profile](screenshot/member-profile.png)
+![Profile](GMS/screenshot/member-profile.png)
 
 ---
 
