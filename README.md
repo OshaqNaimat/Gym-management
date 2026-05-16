@@ -136,7 +136,7 @@ php artisan db:seed
 php artisan serve
 ```
 
-Visit `http://127.0.0.1:8000`
+<!--Visit `http://127.0.0.1:8000-->
 
 ---
 
