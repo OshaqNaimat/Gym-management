@@ -9,7 +9,7 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 ## 🔑 Admin Portal
 
 **Dashboard**  
-![Admin Dashboard](screenshot/admin-dashboard.png)
+![Admin Dashboard](GMS/screenshot/admin-dashboard.png)
 
 **Members**  
 ![Members](screenshot/admin-member-control.png)
