@@ -40,7 +40,7 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 ![Cardio](GMS/screenshot/member-cardio.png)
 
 **Payments**  
-![Member Payments](GMS/screenshot/member-payents.png)
+![Member Payments](GMS/screenshot/member-payemts.png)
 
 **Profile**  
 ![Profile](GMS/screenshot/member-profile.png)
