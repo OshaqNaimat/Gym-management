@@ -6,7 +6,8 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 
 ## 📸 Screenshots
 
-> Admin Dashboard
+### 🖥️ Admin Panel
+
 **Dashboard**
 ![Admin Dashboard](screenshot/admin-dashboard.png)
 
@@ -26,8 +27,10 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 ![Settings](screenshot/admin-setting-control.png)
 
 ---
-> · Member Portal
- **Dashboard**
+
+### 👤 Member Portal
+
+**Dashboard**
 ![Member Dashboard](screenshot/member-dashboard.png)
 
 **Attendance**
@@ -41,7 +44,6 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 
 **Profile**
 ![Profile](screenshot/member-profile.png)
-> · Attendance · Cardio Tracker
 
 ---
 
@@ -105,7 +107,7 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 ```bash
 # 1. Clone the repository
 git clone https://github.com/OshaqNaimat/Gym-management.git
-cd pump-house
+cd Gym-management
 
 # 2. Install dependencies
 composer install
@@ -134,7 +136,7 @@ php artisan db:seed
 php artisan serve
 ```
 
-<!--Visit `http://127.0.0.1:8000`-->
+Visit `http://127.0.0.1:8000`
 
 ---
 
@@ -198,6 +200,16 @@ Calories = MET × Weight (kg) × Duration (hours)
 | Treadmill | 8.0 |
 | Cycling | 7.5 |
 | Walking | 3.5 |
+
+---
+
+## 🚀 Upcoming Features
+
+- [ ] WhatsApp / SMS alerts for expiring plans
+- [ ] Equipment / inventory management
+- [ ] Workout logging (sets, reps, weight)
+- [ ] Admin cardio overview across all members
+- [ ] PWA support for mobile
 
 ---
 
