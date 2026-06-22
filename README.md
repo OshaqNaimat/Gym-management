@@ -136,7 +136,9 @@ php artisan db:seed
 php artisan serve
 ```
 
-<!--Visit `http://127.0.0.1:8000-->
+Visit http://myfitgym.free.nf/
+gmail: TestU@gmail.com
+password : 123456789
 
 ---
 
