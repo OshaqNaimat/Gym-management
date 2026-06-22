@@ -47,6 +47,17 @@ A full-stack gym management system built with **Laravel 12** and **vanilla JS**,
 
 ---
 
+## Demo Website
+
+🌐 **Live Demo:** http://myfitgym.free.nf/
+
+### Test Account
+
+- **Email:** `TestU@gmail.com`
+- **Password:** `123456789`
+
+---
+
 ## ✨ Features
 
 ### 🔐 Authentication
@@ -136,9 +147,6 @@ php artisan db:seed
 php artisan serve
 ```
 
-Visit http://myfitgym.free.nf/
-gmail: TestU@gmail.com
-password : 123456789
 
 ---
 
